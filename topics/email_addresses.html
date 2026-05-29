@@ -1,0 +1,50 @@
+<h1>Email addresses</h1>
+
+<p>
+	Email addresses work great as an unique identifier as they’re something users remember and
+	globally unique. By verifying ownership of the domain, you also can avoid squatting and typos.
+	However, keep in mind that this effectively makes the email address a public-facing identifier.
+	Avoid it if you (or your users) prefer not to expose which individuals are using your website.
+</p>
+
+<p>
+	The structure of an email address is simple. There is the username part, the @ sign, and the
+	domain. But specification and rules defining the exact pattern of each part are complex and
+	building strict validation logic to enforce them is rarely worth the effort. For example, the
+	local part can contain spaces and "@" characters if it is enclosed in double quotes. The domain
+	can include non-Latin characters (IDNs) or even be a literal IP address. The local part can be
+	case-sensitive depending on the hosting mail server.
+</p>
+
+<p>
+	If you just need the email address to send emails, a simple check for the "@" character is
+	sufficient.
+</p>
+
+<p>
+	However, if the email address is an account identifier, we should be more careful. It’s going to
+	be part of your system and will be displayed to users in your settings page. That means like
+	usernames, we need it to be cleanly displayed. As such, I recommend putting the following
+	restrictions:
+</p>
+
+<ol>
+	<li>A maximum length of 100 characters.</li>
+	<li>
+		The email address must contain exactly one "@" character to separate the username and domain.
+	</li>
+	<li>Both the username and the domain must be at least 1 character long.</li>
+	<li>
+		The username can only include lowercase letters, numbers, periods (.), plus signs (+),
+		underscores (_), and hyphens (-).
+	</li>
+	<li>The domain must include at least one period (.).</li>
+	<li>The domain can only include lowercase letters, numbers, hyphens (-), and periods (.).</li>
+</ol>
+
+<p>
+	I strongly recommend against silently modifying the user’s input, such as automatically
+	lowercasing email addresses or stripping the plus sign to block aliases. As I mentioned, the local
+	part of an email address can be case-sensitive. Furthermore, the plus sign (+) is not universal
+	and only has a special meaning in certain mail servers (e.g. Gmail).
+</p>

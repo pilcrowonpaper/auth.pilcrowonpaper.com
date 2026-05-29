@@ -1,0 +1,77 @@
+<h1>Sessions</h1>
+
+<p>
+	When a user visits your website, they'll make multiple HTTP requests to your server. However,
+	these requests are independent to each other on the protocol level as HTTP is stateless. The
+	server can't tell if 2 requests are from the same client.
+</p>
+
+<p>
+	A simple workaround is to store the data on the client and have the client send it with future
+	requests. However, this approach doesn't work for data that the client shouldn't be able to see or
+	modify. For example, storing the authenticated user ID on the client and having the server trust
+	whatever user ID the client sends would be a complete breakdown in security. Instead, any relevant
+	data should be stored as a record on the server, and the client can reference it by ID in
+	subsequent requests to continue the user’s activity.
+</p>
+
+<p>
+	In this book, a session refers to a server-side record that represents a client’s ongoing activity
+	within an application. To prevent malicious actors from referencing arbitrary sessions, the server
+	issues the client a session token. The client includes this token instead of just the ID on
+	subsequent requests. Because the token is known only to client that started the session, an
+	outside actor cannot hijack the session.
+</p>
+
+<p>
+	Note that I'll be specifically referring to sessions that keep track of authentication state as
+	"auth session." Like some of my examples, a server can have multiple types of sessions. For
+	example, I often use a sign-up session to keep track of the user's email address and the email
+	address verification process.
+</p>
+
+<p>
+	If the ID is random and unguessable, a token isn't technically required. The client can just send
+	the ID and this is a common implementation. However, I'd discourage going this approach. Using the
+	identifier as a secret is a footgun and there are many times you'd want to reference the session
+	without leaking sensitive credentials. Instead, I would recommend generating both an ID and a
+	secret for your sessions. Similar to user authentication, ID identifies the session and the secret
+	acts as the proof. The ID and secret is combined to a single token.
+</p>
+
+<p>
+	The session secret must be generated using a cryptographically-secure random source. Do not use a
+	fast, predictable random generator often found in the language's standard math library. It should
+	also be hashed before storage. This ensures that even if your database is leaked, a malicious
+	actor can't derive a valid session credential. To verify a secret, hash the input value and
+	compare it against the stored hash using a constant-time comparison. If the secret has enough
+	entropy, a fast hashing algorithm can be used unlike user-defined passwords. I recommend using a
+	32-byte secret and hashing it with SHA-256. Note that with SHA-256, there is little security
+	benefit in making the secret larger than 32 bytes as the output hash is also 32 bytes.
+</p>
+
+<p>
+	To create the token, encode the secret into a string and join it with the ID using a period as the
+	deliminator. There are various encoding schemes, but hex encoding, base64, and base64url are
+	common options.
+</p>
+
+<pre><code>u9qerabnmqwfjrig.oIGZG+9w+flpwCIb5azPgXLdmmS+86KYkQbIag/wXB8=</code></pre>
+
+<p>
+	Your main threats against sessions are session hijacking. The session token could be stolen in
+	many different ways, including malware and stolen devices. As such, it's important to make put
+	boundaries on sessions. A malicious actor should not be able to take over everything just by
+	stealing a single token. First, this means putting a reasonable expiration. This could be a fixed
+	expiration or a dynamic one. Second, issue a new session and a session token after certain actions
+	such as user authentication. You can also add further restrictions to sessions, such as binding
+	them to an IP address. However, for most consumer-facing websites, I’d recommend against this
+	since IP addresses can change frequently, especially on mobile networks or when using a VPN.
+</p>
+
+<p>
+	As for storage of the session token, I personally don't have a strong opinion on it. Just store it
+	at the safest option provided the platform. For browsers, all methods provide more or less the
+	same level of security and risks. See the
+	<a href="/browser-client-side-storage">browser client-side storage</a> page for details.
+</p>

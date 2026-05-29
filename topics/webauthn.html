@@ -1,0 +1,342 @@
+<h1>Web Authentication API (WebAuthn)</h1>
+
+<h2>Overview</h2>
+
+<p>
+	The <a href="https://www.w3.org/TR/webauthn-3/">Web Authentication API (WebAuthn)</a> is an API
+	for working with public key-based credentials. Typically, the credential's private key is stored
+	on the user's computer, mobile device, external hardware token, or password manager. When the
+	credential is stored on a physical device, the user can prove possession of that device. This is
+	known as user presence. Additionally, credentials can be protected using a shared PIN or
+	biometrics. In that case, the user can verify their identity using a single PIN or biometric
+	configured on their device or password manager. This is known as user verification.
+</p>
+
+<p>
+	There are 3 actors involved in the process: the authenticator, the relying party, and the client.
+	The authenticator stores the credential's private key and is also responsible for verifying the
+	user's identity when supported. Each authenticator has a globally unique identifier known as the
+	AAGUID. The relying party is the entity that can request the authenticator to create a credential
+	or provide proof of ownership of an existing credential. It consists of both the client-side
+	component that interacts with the web API and the server that stores and verifies the relevant
+	data. In practice, this is your website. Finally, the client is the browser, which acts as the
+	intermediary between the authenticator and the relying party.
+</p>
+
+<p>
+	During registration, the authenticator generates and stores a private key while sharing the
+	corresponding public key with the relying party, which stores it for future verification. During
+	authentication, the user selects a credential, the authenticator optionally verifies the user, and
+	then signs a message using the credential's private key. The credential ID and signature are sent
+	to the relying party, which verifies the signature using the stored public key.
+</p>
+
+<p>
+	Credentials that are stored directly on and accessible to the authenticator are called
+	discoverable credentials (formerly known as resident keys). There are also non-discoverable
+	credentials, where the public key is not stored by the authenticator. These are commonly used by
+	devices with limited storage, such as external hardware tokens. These are usually implemented by
+	encrypting the generated private key and exporting it as the credential ID, which is then stored
+	by the relying party. During authentication, the relying party provides the authenticator with a
+	list of credential IDs, and the authenticator attempts to decrypt and use the ones it recognizes.
+	In this model, the user must first manually identify the account or entity they are attempting to
+	authenticate as.
+</p>
+
+<p>
+	WebAuthn also optionally supports attestation statements, which can be used to verify the
+	authenticity and provenance of an authenticator. Depending on the attestation format and policy,
+	this may show general information like the authenticator model, or provide more specific
+	information that identifies a particular device. Attestation is most commonly used in enterprise
+	environments, for example to ensure that only company-issued security keys are used.
+</p>
+
+<p>
+	The relying party is identified by its relying party ID, which is a domain. A website can identify
+	itself as a relying party using either its current domain or any parent domain. For example,
+	<code>foo.example.com</code> can use either <code>foo.example.com</code> or
+	<code>example.com</code>. Similar to the definition of same-site origins, browsers take the public
+	suffix list into account. For example, <code>foo.github.io</code> cannot use
+	<code>github.io</code> as its relying party ID because it is a public suffix.
+</p>
+
+<h2>Registration</h2>
+
+<p>
+	For each attempt, the relying party should generate a unique, single-use random nonce as a
+	challenge on the server and return it to the client. The authenticator will use this value to
+	ensure each attestation statement is unique. Alternatively, the server can create a unique attempt
+	ID tied to the challenge and return both so the client can reference the specific attempt when
+	sending a response from the authenticator. Note that the challenge is only necessary when
+	attestation is required, and provides no added value if attestation is not being used or enforced.
+</p>
+
+<p>
+	A credential can be created using <code>navigator.credentials.create()</code> by passing the
+	<code>publicKey</code> option.
+</p>
+
+<pre><code>const credential = await navigator.credentials.create({
+	challenge: challenge,
+	rp: {
+		id: new URL(window.location.href).hostname,
+	},
+	user: {
+		id: new TextEncoder().encode(userId),
+		displayName: userEmailAddress,
+	},
+	pubKeyCredParams: [
+		{ type: "public-key", alg: -8 },
+		{ type: "public-key", alg: -7 },
+		{ type: "public-key", alg: -257 },
+	],
+	excludeCredentials: [{
+		type: "public-key",
+		id: existingCredentialId,
+	}],
+	authenticatorSelection: {
+		residentKey: "required",
+		requireResidentKey: true,
+		userVerification: "required",
+	},
+	attestation: "none",
+	extensions: {
+		credentialProtectionPolicy: "userVerificationRequired",
+		enforceCredentialProtectionPolicy: false,
+	},
+})</code></pre>
+
+<p>
+	First, it takes the relying party ID as <code>rp.id</code>. It also used to accept a
+	human-readable name as <code>rp.name</code>, but this has since been deprecated.
+</p>
+
+<p>
+	Next is the <code>user</code> property. The credential will be scoped to the user ID defined by
+	<code>user.id</code>. If a new credential is created with the same ID, it will replace the
+	existing credential. The ID will also be returned by the authenticator during authentication. For
+	this reason, I recommend matching it to your application's internal user ID, even though it can
+	technically be any arbitrary byte sequence. If you prefer not to expose the actual user ID, use a
+	randomly generated byte string instead. The <code>user.displayName</code> should contain a
+	human-readable identifier for the user, such as an email address, user ID, username, or full name.
+	It also previously accepted <code>user.name</code>, but this has likewise been deprecated.
+</p>
+
+<p>
+	The <code>challenge</code> option takes the generated challenge. This should be an empty byte
+	array if the challenge is not used.
+</p>
+
+<p>
+	The <code>pubKeyCredParams</code> array defines which credential types and signature algorithms
+	the relying party supports. Since there is only a single credential type,
+	<code>public-key</code>, this is primarily used to specify the supported signature algorithms.
+	Note that these algorithms are identified using the
+	<a href="https://www.iana.org/assignments/cose/cose.xhtml">COSE algorithm IDs</a> defined in the
+	IANA registry. Confusingly, the signature algorithm also determines the public key type, even
+	though multiple public key types can theoretically support the same signature algorithm. Some
+	commonly used algorithms include:
+</p>
+
+<ul>
+	<li>
+		-7 (ES256): ECDSA with SHA-256. The WebAuthn specification requires the authenticator to use the
+		P-256 curve. The authenticator will return an ECDSA public key using P-256. Do not use -9
+		(ESP256).
+	</li>
+	<li>
+		-257 (RS256): RSASSA PKCS#1 v1.5 with SHA-256. The authenticator will return an RSA public key.
+	</li>
+	<li>
+		-8 (EdDSA): EdDSA. The WebAuthn specification requires the authenticator to use the Ed25519
+		curve. The authenticator will return an Ed25519 public key and use Ed25519 signatures. Do not
+		use -19 (Ed25519).
+	</li>
+</ul>
+
+<p>
+	The <code>authenticatorSelection</code> object specifies the type of credential to create.
+	<code>residentKey</code> should be set to <code>"required"</code> when creating a discoverable
+	credential and <code>"discouraged"</code> otherwise. The
+	<code>requireResidentKey</code> option is deprecated, but should still be included for backward
+	compatibility. The <code>userVerification</code> option controls whether the authenticator should
+	verify the user and accepts one of <code>"required"</code>, <code>"preferred"</code>, or
+	<code>"discouraged"</code>. In practice, this is mainly used to ensure that the authenticator
+	supports user verification. Requiring user verification during registration does not imply that it
+	will also be required during authentication.
+</p>
+
+<p>
+	The <code>attestation</code> property specifies the type of attestation the relying party
+	requires. <code>"none"</code> indicates that the relying party does not require attestation. Note
+	that the authenticator may omit device-identifying information entirely, including the AAGUID.
+	<code>"direct"</code> indicates that the relying party requires attestation from the authenticator
+	itself, which typically reveals information about the authenticator model without identifying the
+	specific device. <code>"indirect"</code> is similar to <code>"direct"</code>, except the client
+	(browser) may replace the attestation with a more privacy-preserving format, such as one issued by
+	a third-party certificate authority. In this case, detailed device information may not be
+	available, though the attestation can still be used to verify the authenticator’s capabilities and
+	trustworthiness. Finally, <code>"enterprise"</code> indicates that the relying party is requesting
+	enterprise attestation, which can uniquely identify a specific device. The authenticator must
+	explicitly allow the relying party before this type of attestation can be returned.
+</p>
+
+<p>
+	Use the <code>excludeCredentials</code> option to provide a list of existing credentials and
+	prevent authenticators that already own those credentials from creating new ones.
+</p>
+
+<p>
+	Finally, the <code>extensions</code> property can be used to define extension inputs.
+</p>
+
+<p>
+	The returned promise will reject with an <code>Error</code>. The name will be
+	<code>NotAllowedError</code> if the user cancels the process, or
+	<code>NotSupportedError</code> if the authenticator cannot create a credential that satisfies the
+	provided requirements.
+</p>
+
+<p>
+	If a credential is successfully created, the returned promise resolves to a
+	<code>PublicKeyCredential</code>, which its <code>response</code> property contains an
+	<code>AuthenticatorAttestationResponse</code>. This includes the attestation object as
+	<code>AuthenticatorAttestationResponse.attestationObject</code> and the UTF-8–serialized,
+	JSON-encoded client data object as
+	<code>AuthenticatorAttestationResponse.clientDataJSON</code>.
+</p>
+
+<p>
+	The attestation object includes the attestation statement, the attestation statement format, and
+	the authenticator data. The attestation statement must be parsed based on the format. The
+	authenticator data is binary data structure that includes the credential ID, AAGUID, public key,
+	and various other metadata about the authenticator. See the
+	<a href="/webauthn-authenticator-data">WebAuthn authenticator data</a> page for details. Do not
+	forget to verify that the public key is valid and one of the supported type.
+</p>
+
+<p>
+	The client data is a JSON object that includes information about the client. See the
+	<a href="/webauthn-client-data">WebAuthn client data</a> page for details.
+</p>
+
+<p>
+	If an attestation statement is defined, verify it against the authenticator data and client data.
+	Then invalidate the current challenge. The challenge may be invalidated after a successful
+	attestation or after each attempt. Both approaches are equally secure.
+</p>
+
+<p>
+	Finally, store the credential ID, public key, and signature algorithm. Ensure the credential ID is
+	unique and queryable, and reject it if it is already in use. Optionally, associate the credential
+	ID with the user ID passed to <code>navigator.credentials.create()</code>, since the authenticator
+	returns both during authentication. If the credential ID is too long to use directly, you may hash
+	it before storage.
+</p>
+
+<p>
+	You can optionally support signature counters, which are incremented after each signing operation.
+	In practice, these are mostly supported by external hardware tokens. A value of `0` indicates that
+	the authenticator does not support signature counters. Although signature counters are intended to
+	help detect potential private key theft, they do not provide definitive proof that compromise has
+	occurred. At best, a counter mismatch should be treated as a signal to log the event and manually
+	review the user’s account. It is also worth noting that extracting private keys from external
+	hardware tokens is generally very difficult in practice. If you implement this feature, store the
+	counter alongside the credential.
+</p>
+
+<p>
+	If attestation is not required, you can ignore the client data, as it cannot be verified. The Web
+	API also allows direct access to authenticator data with
+	<code>AuthenticatorAttestationResponse.getAuthenticatorData()</code>, letting you skip parsing the
+	CBOR-encoded attestation object.
+</p>
+
+<p>
+	Alternatively, you can skip parsing authenticator data on the client entirely. The credential ID
+	is available as
+	<code>PublicKeyCredential.rawId</code>, and the public key can be obtained using
+	<code>AuthenticatorAttestationResponse.getPublicKey()</code>. The key is returned as a
+	<code>SubjectPublicKeyInfo</code> ASN.1 structure encoded in DER format, as defined in
+	<a href="https://datatracker.ietf.org/doc/html/rfc5280">RFC 5280</a>. You must also retrieve the
+	COSE algorithm ID via <code>AuthenticatorAttestationResponse.getPublicKeyAlgorithm()</code>, since
+	the public key does not include the signing algorithm. Note that Safari only supports algorithm -7
+	(ES256) with the P-256 curve for <code>getPublicKey()</code>, so you may still need to extract the
+	COSE public key from authenticator data to support other algorithms. The AAGUID is not exposed in
+	JavaScript and must be parsed from authenticator data. You can then send the credential ID, public
+	key, signature algorithm, and optionally the AAGUID separately to the server instead.
+</p>
+
+<h2>Authentication</h2>
+
+<p>
+	Similar to registration, you must first generate a challenge. Unlike attestation statements, which
+	are optional, the challenge is required here because it is used to generate signatures.
+</p>
+
+<p>
+	To verify an authenticator, use <code>navigator.credentials.get()</code> with the
+	<code>publicKey</code> option.
+</p>
+
+<pre><code>const credential = await navigator.credentials.get({
+	publicKey: {
+		challenge: challenge,
+		allowCredentials: [{
+			type: "public-key",
+			id: registeredCredentialId,
+		}],
+		userVerification: "required",
+	},
+});</code></pre>
+
+<p>
+	The <code>challenge</code> option contains the generated challenge.
+</p>
+
+<p>
+	The <code>allowCredentials</code> option can be used to restrict valid credentials and to list IDs
+	of non-discoverable credentials.
+</p>
+
+<p>
+	The <code>userVerification</code> option controls how strictly the authenticator enforces user
+	verification. It takes one of <code>required</code>, <code>preferred</code>, or
+	<code>discouraged</code>.
+</p>
+
+<p>
+	The method returns a promise that either rejects if the user cancels the operation or resolves to
+	a <code>PublicKeyCredential</code>.
+</p>
+
+<p>
+	Unlike registration, you must send the full binary authenticator data and client data to the
+	server. These are available as <code>AuthenticatorAssertionResponse.authenticatorData</code> and
+	<code>AuthenticatorAssertionResponse.clientDataJSON</code>. You must also send the credential ID
+	from <code>PublicKeyCredential.rawId</code>, along with the signature from
+	<code>AuthenticatorAssertionResponse.signature</code>. The user handle for the credential is
+	available via <code>AuthenticatorAssertionResponse.userHandle</code>.
+</p>
+
+<p>
+	After parsing and validating the authenticator data and client data, retrieve the credential using
+	the credential ID. To verify the signature, first compute the SHA-256 hash of the client data
+	JSON. Then build the signed message by concatenating the authenticator data first, followed by the
+	hash of the client data JSON. Verify the signature against this message. If verification fails or
+	the public key is invalid, the process must fail.
+</p>
+
+<p>
+	If you support signature counters and the stored credential has a non-zero counter value, check
+	whether the current attempt’s signature counter is greater than the stored value, and update the
+	stored value before verifying the signature. If the counter does not increase, simply log the
+	event for future reference. Do not block the authentication attempt, as in the event of private
+	key theft, the legitimate user’s authentications are also likely to encounter counter mismatches.
+	I would also dicourage disabling the account as well since these can occur naturally.
+</p>
+
+<p>
+	Finally, invalidate the challenge. As with registration, you may invalidate it only after
+	successful validation or after each attempt.
+</p>

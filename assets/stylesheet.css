@@ -1,0 +1,285 @@
+html {
+	--link-color: #1460ec;
+
+	padding: 0 1rem;
+	width: 100vw;
+}
+
+body {
+	max-width: 50rem;
+	min-height: 100%;
+	width: 100%;
+	margin: auto;
+}
+
+header {
+	padding: 2rem 0;
+	width: 100%;
+	display: flex;
+}
+
+#home-link {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+#home-link img {
+	height: 2rem;
+	width: 2rem;
+	background-color: #f4f4f4;
+}
+
+#home-link p {
+	font-size: 1.2rem;
+	font-weight: 600;
+}
+
+main {
+	padding-top: 1rem;
+	width: 100%;
+	padding-bottom: 4rem;
+}
+
+main h1 {
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: 2rem;
+}
+
+main h2 {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-top: 2.5rem;
+	margin-bottom: 1.5rem;
+}
+
+main h3 {
+	font-size: 1.2rem;
+	font-weight: 700;
+	margin-top: 2rem;
+	margin-bottom: 1.5rem;
+}
+
+main h4 {
+	font-size: 1.1rem;
+	font-weight: 700;
+	margin-top: 1.5rem;
+	margin-bottom: 1.5rem;
+}
+
+main p {
+	line-height: 1.5;
+	margin-bottom: 1.5rem;
+}
+
+main pre {
+	background-color: #f4f4f4;
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+	overflow: auto;
+}
+
+main pre code {
+	tab-size: 2;
+	font-size: 0.85rem;
+	line-height: 1.5;
+}
+
+main p a,
+main ul a,
+main ol a,
+main table a,
+main blockquote a {
+	color: var(--link-color);
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+main p strong,
+main ul strong,
+main ol strong,
+main table strong {
+	font-weight: 600;
+}
+
+main p a.url-link {
+	word-break: break-all;
+}
+
+main p code {
+	word-break: break-all;
+}
+
+main p em,
+main ul em,
+main ol em,
+main table em {
+	font-style: italic;
+}
+
+main ul,
+main ol {
+	line-height: 1.5;
+	margin-bottom: 1.5rem;
+}
+
+main ul li {
+	list-style: disc inside;
+	margin-bottom: 0.2rem;
+}
+
+main ol li {
+	list-style: decimal inside;
+	margin-bottom: 0.2rem;
+}
+
+main li:last-child {
+	margin-bottom: 0;
+}
+
+main code {
+	font-family: monospace;
+}
+
+main blockquote {
+	background-color: #f4f4f4;
+	color: #3c3c3c;
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+main blockquote > *:last-child {
+	margin-bottom: 0;
+}
+
+main blockquote > footer {
+	font-size: 0.85rem;
+	font-style: italic;
+}
+
+main .table-wrapper {
+	width: 100%;
+	overflow: auto;
+	padding-bottom: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+main table {
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+	white-space: nowrap;
+}
+
+main table caption {
+	font-size: 0.85rem;
+	margin-top: 0.5rem;
+	text-align: left;
+	font-style: italic;
+	caption-side: bottom;
+	width: 0;
+	min-width: 100%;
+	white-space: normal;
+	color: #3c3c3c;
+	-webkit-text-size-adjust: none;
+	text-size-adjust: none;
+}
+
+main thead {
+	background-color: #f4f4f4;
+}
+
+main thead th {
+	padding: 0.5rem 0.5rem;
+	font-size: 0.85rem;
+}
+
+main thead th:first-child {
+	padding-left: 1rem;
+}
+
+main thead th:last-child {
+	padding-right: 1rem;
+}
+
+main tbody tr {
+	border-bottom: solid 1px #cccccc;
+}
+
+main tbody tr:last-child {
+	border-bottom: none;
+}
+
+main tbody td {
+	padding: 0.85rem 0.5rem;
+}
+
+main tbody td:first-child {
+	padding-left: 1rem;
+}
+
+main tbody td:last-child {
+	padding-right: 1rem;
+}
+
+main figure.square {
+	margin: 0 auto 1.5rem auto;
+	display: block;
+	width: min(70vh, 100%);
+}
+
+main figure.square > img {
+	max-height: 70vh;
+	height: auto;
+	width: min(70vh, 100%);
+	background-color: #f4f4f4;
+}
+
+main figure.square > figcaption {
+	font-size: 0.85rem;
+	margin-top: 0.5rem;
+	text-align: left;
+	font-style: italic;
+	caption-side: bottom;
+	width: 100%;
+	white-space: normal;
+	color: #3c3c3c;
+	-webkit-text-size-adjust: none;
+	text-size-adjust: none;
+}
+
+/* reset */
+
+* {
+	margin: 0;
+	padding: 0;
+	font-size: inherit;
+	font-weight: normal;
+	color: inherit;
+	background: none;
+	border: none;
+	background-color: transparent;
+	appearance: none;
+	box-sizing: border-box;
+	text-decoration: none;
+}
+
+html {
+	font-family: system-ui;
+	font-size: 1rem;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+ul,
+ol {
+	list-style: none;
+}

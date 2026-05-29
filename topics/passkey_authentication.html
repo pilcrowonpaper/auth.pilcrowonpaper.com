@@ -1,0 +1,60 @@
+<h1>Passkey authentication</h1>
+
+<p>
+	Generate a challenge and call <code>navigator.credentials.get()</code> with user verification set
+	to required.
+</p>
+
+<pre><code>const credential = await navigator.credentials.get({
+	publicKey: {
+		challenge: challenge,
+		userVerification: "required",
+	},
+});</code></pre>
+
+<p>
+	On the server, verify that both the user precence and user verification flag in the authenticator
+	data is enabled. Then, verify the signature using the public key.
+</p>
+
+<p>
+	If you also support authentication methods that require the user to enter their email address
+	(such as password-based login or email code sign-in), consider adding passkey autofill. This is a
+	feature where the browser displays a dropdown of the user’s available passkeys when they focus the
+	input field, similar to password managers. This significantly reduces friction, since the user
+	does not need to understand what passkeys are or manually look for a “Sign in with passkey”
+	button.
+</p>
+
+<p>
+	First, set the <code>autocomplete</code> attribute of the email address input to
+	<code>"webauthn"</code>.
+</p>
+
+<pre
+><code>&lt;input name=&quot;email_address&quot; type=&quot;email&quot; autocomplete=&quot;webauthn&quot;&gt;</code></pre>
+
+<p>
+	Next, after the page loads, call <code>navigator.credentials.get()</code> with
+	<code>mediation</code> set to <code>"conditional"</code>.
+</p>
+
+<pre><code>const credential = await navigator.credentials.get({
+	mediation: "conditional",
+	publicKey: {
+		...
+	},
+});</code></pre>
+
+<p>
+	The promise resolves only when the user selects a passkey from the dropdown, and rejects if the
+	user cancels the authentication flow. Note that the promise may remain pending indefinitely until
+	the user takes an action. As such, this should either be called at the end of the main JavaScript
+	script or by using floating promises.
+</p>
+
+<p>
+	If your challenges expire, ensure that the request is aborted when the challenge expires, or
+	automatically refresh the challenge periodically. Uusers may leave the page open for an extended
+	period of time before interacting with the dropdown UI.
+</p>

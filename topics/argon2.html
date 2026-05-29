@@ -1,0 +1,46 @@
+<h1>Argon2</h1>
+
+<p>
+	Argon2 is a newer family of password hashing algorithms. It is designed to be memory-intensive to
+	thwart attacks using GPUs and other dedicated hardware. I recommend using Argon2id with at least
+	16MiB of memory, 3 iterations, and 1 degree of parralelism.
+</p>
+
+<p>
+	Argon2 has three variations: Argon2i, Argon2d, and Argon2id. Argon2i is designed to be resistant
+	against side-channel attacks, whereas Argon2d offers superior resistance against GPU-based
+	attacks. Argon2id combines the mechanisms of both variants to provide a balanced defense.
+</p>
+
+<p>
+	It is configured using 3 main parameters. First is the memory size, which determines the size of
+	memory each process uses. Doubling the memory size doubles the runtime. Ideally this should be
+	larger than 128MiB to truely see the benefits on Argon2 but this is unrealistic for most web
+	applications. Next is the iteration count. If you're using Argon2id, use a minimum of 3
+	iterations. Finally, the degree of parallelism. This dictates the number of parallel threads
+	utilized per hashing operation. While increasing parallelism speeds up individual execution times,
+	it reduces the overall number of concurrent hashing operations your server can handle. I recommend
+	always using a value of 1 to maximize total server throughput.
+</p>
+
+<p>
+	Argon2 can also be configured to output any size of data, but it is typically set to 32 bytes.
+</p>
+
+<p>
+	There is no standardized output format but the PHC string format is often used. It takes the form
+</p>
+
+<pre><code>$argon2id$v=19$m=MEMORY,t=ITERATION,p=PARALLELISM$SALT$HASH</code></pre>
+
+<p>
+	where <code>MEMORY</code> is the memory in KiB, <code>ITERATION</code> is the iteration count,
+	<code>PARALLELISM</code> is the degree of parallelism, <code>SALT</code> is the salt encoded in
+	base64, and <code>HASH</code> is the hash encoded in base64.
+</p>
+
+<p>
+	The fastest consumer-grade GPU (RTX 5090) can calculate about 10,000 hashes/second and the fastest
+	enterprise-grade GPU (H100) can calculate about 20,000 hashes/second at the recommended
+	configuration. The H100s cost about $2 to $5 per hour to rent.
+</p>

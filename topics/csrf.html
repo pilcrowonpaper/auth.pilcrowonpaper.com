@@ -1,0 +1,105 @@
+<h1>Cross-site request forgery (CSRF)</h1>
+
+<p>
+	Cross-site request forgery (CSRF) is an attack where a malicious website sends authenticated
+	requests to an application where the user is currently signed in, allowing the attacker to execute
+	unauthorized actions on their behalf.
+</p>
+
+<p>
+	Browsers automatically attach relevant cookies to all outgoing requests, including those initiated
+	by malicious third-party websites. While the browser's same-origin policy (SOP) blocks most
+	cross-origin requests, it explicitly permits "simple requests". These include GET, HEAD, and
+	certain POST requests. If your server accepts these requests and store the session token inside a
+	cookie, a malicious website can send requets as the authenticated user. Note that the
+	vulnerability is specifically the browser’s automatic use of the user's cookies. A random person
+	manually sending requests with tools like cURL is not a CSRF vulnerability and should not be
+	treated as an attack.
+</p>
+
+<p>
+	First, it’s important to clarify the difference between “origin” and “site.” In the context of
+	same-origin and cross-origin, an origin refers to the exact domain, including the subdomain.
+	<code>foo.example.com</code> and <code>bar.example.com</code> are considered different origins. A
+	site, however, refers to the root domain. <code>foo.example.com</code> and
+	<code>bar.example.com</code>
+	are considered same-site. Note that browsers also take the Public Suffix List into account when
+	determining the root domain. For example, <code>github.io</code>, which is used by GitHub Pages to
+	host user-created sites, is included in this list, so <code>foo.github.io</code> and
+	<code>bar.github.io</code> are treated as different sites.
+</p>
+
+<p>
+	The first rule of CSRF prevention is to never accept GET requests for state-changing actions. Even
+	if you block GET requests triggered with JavaScript, a malicious site can still redirect a user to
+	the URL and trigger the action. Always use POST or other non-GET methods for endpoints that modify
+	state.
+</p>
+
+<p>
+	Not all POST requests are considered simple requests. POST requests are only treated as such if
+	they completely lack a <code>Content-Type</code> header, or if that header matches one of 3 MIME
+	types:
+	<code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, or
+	<code>text/plain</code>. Note that the browser uses the header instead of the request body to
+	differentiate requests. You must properly parse and validate the header even if you only accept
+	other data types like JSON. You must also reject requests that don't include the header. Do not
+	use a simple string match for validating the header. For example, a header value of
+	<code>text/plain; application/json</code> has the MIME type <code>text/plain </code> and will be
+	allowed by the browser. Even with proper validation, I still recommend taking further CSRF
+	mitigations.
+</p>
+
+<p>
+	The simplest method to prevent CSRF is to set the <code>SameSite</code> cookie attribute to
+	<code>Strict</code> or <code>Lax</code>. <code>Strict</code> ensures the cookie is not included in
+	any cross-site requests, while <code>Lax</code> ensures that cookie is only included in GET and
+	GET-like request (HEAD, OPTIONS, TRACE). Using <code>Strict</code> will block the cookie from
+	being sent when the user is redirected from a third-party site, which is usually not the desired
+	behavior.
+</p>
+
+<p>
+	While the <code>SameSite</code> cookie attribute is a good layer of defence, it is unforunately
+	not a silver bullet. First, it will not block cross-origin requests such as between subdomains.
+	You are still susceptible to CSRF if your one your subdomains has a XSS vulnerability or gets
+	taken over. Additionally, the attribute was only widely adopted by browsers around 2019. Any
+	legacy browsers that don't support it will simply ignore the attribute, leaving those users
+	exposed.
+</p>
+
+<p>
+	As such, I recommend implementing a strict origin check on the server and rejecting non-GET
+	requests originating from untrusted origins. The simplest way to do this is by checking the
+	<code>Sec-Fetch-Site</code> header. This header is included in all browser requests (not just
+	those sent with the Fetch Web API) and indicates the relationship between the initiating website
+	and the target server. Because it is a forbidden header, client-side JavaScript cannot modify it.
+	For non-GET requests, reject any request where the header is missing or the value is not
+	<code>same-origin</code>. Although the header has only been widely supported since 2023, unlike
+	the SameSite cookie attribute, you can still block older browsers by simply rejecting requests
+	that do not include the header. Headers prefixed with <code>Sec-</code> have also been part of the
+	browser forbidden header list since 2008 so the header cannot be spoofed even in legacy browsers.
+	Note that it doesn't matter that the header can be spoofed outside of browsers as CSRF is
+	fundamentally a browser-based attack.
+</p>
+
+<p>
+	If you need to support older browsers or allow requests from subdomains, use the
+	<code>Origin</code> header. This includes the origin of the request source and has been part of
+	the forbidden request headers since 2008. All major browsers have included this header on most
+	requests since around 2020 at the latest, though some adopted it earlier. Block requests that do
+	not include the header or that originate from sources not present in a list of trusted origins.
+</p>
+
+<p>
+	Finally, the oldest way to prevent CSRF is by using anti-CSRF tokens. Your server generates a
+	token on the initial visit, and that token is required for any valid form submission. Third-party
+	websites cannot access the token because the browser’s SOP prevents cross-origin sites from
+	reading responses and thus the embedded token. This approach is compatible with legacy browsers
+	and remains widely effective. See OWASP’s
+	<a
+		href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html"
+		>CSRF</a
+	>
+	page to learn how to implement them.
+</p>

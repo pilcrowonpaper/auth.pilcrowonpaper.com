@@ -1,0 +1,4 @@
+github.com/pilcrowonpaper/go-json v0.7.0 h1:QFs2QfC4nAuc4wcvLwSuYH1BTqXvlFiTLXr+r2HsbLU=
+github.com/pilcrowonpaper/go-json v0.7.0/go.mod h1:lsOID8+9ZDoLGynzBiofkL8bJlrlK0A4MjqO2RQ6pNk=
+golang.org/x/net v0.54.0 h1:2zJIZAxAHV/OHCDTCOHAYehQzLfSXuf/5SoL/Dv6w/w=
+golang.org/x/net v0.54.0/go.mod h1:Sj4oj8jK6XmHpBZU/zWHw3BV3abl4Kvi+Ut7cQcY+cQ=

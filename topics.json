@@ -1,0 +1,23 @@
+[
+	"authentication_methods",
+	"sessions",
+	"auth_sessions",
+	"email_addresses",
+	"passwords",
+	"browser_client_side_storage",
+	"csrf",
+	"argon2",
+	"bcrypt",
+	"email_address_verification_codes",
+	"email_code_authentication",
+	"passkeys",
+	"webauthn",
+	"webauthn_authenticator_data",
+	"webauthn_cbor_encoding",
+	"webauthn_client_data",
+	"passkey_registration",
+	"passkey_authentication",
+	"ecdsa",
+	"rsa_signature_scheme",
+	"eddsa"
+]

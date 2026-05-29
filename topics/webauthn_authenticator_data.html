@@ -1,0 +1,65 @@
+<h1>WebAuthn authenticator data</h1>
+
+<p><i>Bytes and bits are counted using a 0-based index.</i></p>
+
+<p>
+	The authenticator data is binary data that contains information about the authenticator and,
+	during registration, the newly created credential. It must be properly validated during
+	registration and authentication.
+</p>
+
+<p>
+	The first 32 bytes are the SHA-256 hash of the relying party ID. This must be verified against the
+	expected value.
+</p>
+
+<p>Byte 32 contains several flags:</p>
+
+<ul>
+	<li>
+		Bit 0 (left-most bit): The user presence flag. Set to 1 if the user actively interacted during
+		registration or authentication (e.g. touched a security key or approved a prompt). In most
+		flows, this should be 1.
+	</li>
+	<li>
+		Bit 2: The user verification flag. Set to 1 if the user’s identity was verified (e.g., via PIN
+		or biometrics). Check that the flag is enabled if you require user verification.
+	</li>
+	<li>
+		Bit 3: The backup eligibility flag. Set to 1 if the authenticator supports credential backup
+		(e.g., cloud sync).
+	</li>
+	<li>
+		Bit 4: The backed-up state flag. Set to 1 if the credential is currently backed up (e.g., in the
+		cloud).
+	</li>
+	<li>
+		Bit 6: The attested credential data included flag. Set to 1 if the credential is included in the
+		authenticator data. This should be enabled during registration.
+	</li>
+	<li>Bit 7: The extensions data included flag.</li>
+</ul>
+
+<p>The next 4 bytes are a 32-bit unsigned integer representing the signature counter.</p>
+
+<p>
+	If the attested credential data included flag is set to 1, the following bytes contain the
+	attested credential data, which has variable length. The first 16 bytes are the AAGUID of the
+	authenticator. An all-zero value indicates it is undefined. The next 2 bytes are a 16-bit unsigned
+	integer indicating the length of the credential ID, followed by the credential ID itself. The
+	maximum size of the ID is set to 1023 bytes (inclusive) by the specifcation. The remaining bytes
+	contain the credential public key encoded as a COSE key in CBOR format. This is the final element
+	of the attested credential data. See the pages for each algorithm for details on COSE formats:
+	<a href="/ecdsa">ECDSA</a>, <a href="/rsassapkcs1v15">RSASSA PKCS#1 v1.5</a>, and
+	<a href="/eddsa">EdDSA</a>. Also see the <a href="/webauthn-cbor-encoding"
+		>WebAuthn CBOR encoding</a
+	> page for details on CBOR parsing. Note that the signature algorithm is embedded within the COSE
+	public key.
+</p>
+
+<p>
+	Finally, if the extensions data included flag is set to 1, the remaining bytes contain a
+	CBOR-encoded map of extensions. See the
+	<a href="/webauthn-cbor-encoding">WebAuthn CBOR encoding</a> page for parsing details. In general,
+	you should reject any extension data that you did not explicitly request or expect.
+</p>

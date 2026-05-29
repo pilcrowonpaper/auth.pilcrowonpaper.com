@@ -1,0 +1,26 @@
+<h1>WebAuthn CBOR encoding</h1>
+
+<p>
+	You are likely to encounter CBOR in two places: the COSE public key and the extensions data in the
+	authenticator data. You may also encounter it if you choose to manually parse the attestation
+	object during registration.
+</p>
+
+<p>
+	CBOR is a binary format with data types similar to JSON. It is defined in
+	<a href="https://datatracker.ietf.org/doc/html/rfc8949">RFC 8949</a>. It supports maps (similar to
+	JSON objects), arrays, text strings, byte strings, integers, floats, and simple values (including
+	true, false, undefined, and null).
+</p>
+
+<p>
+	All CBOR encoding in WebAuthn follows the
+	<a
+		href="https://fidoalliance.org/specs/fido-v2.2-ps-20250714/fido-client-to-authenticator-protocol-v2.2-ps-20250714.html#message-encoding"
+		>CTAP2 canonical CBOR encoding form</a
+	>, which defines strict rules that ensure each data structure has a single encoding. This makes
+	parsing CBOR maps significantly easier. Most notably, indefinite-length items are forbidden and
+	map keys must be sorted. As such, you can parse a map expecting a specific key order, and when you
+	expect a specific CBOR value (including maps), it can just be verified using a direct byte-level
+	comparison.
+</p>
