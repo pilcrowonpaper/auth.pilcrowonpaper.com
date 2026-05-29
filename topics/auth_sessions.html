@@ -26,3 +26,14 @@
 	them out from their account eternally. Treat granular session management as a high-privilege
 	action.
 </p>
+
+<p>
+	I would recommend issuing a new authenticated session after a successful identity verification or
+	re-verification. This should also apply to other session types. The purpose of identity
+	verification is to prevent malicious actors from using stolen session tokens. However, if the
+	existing session is re-used, an attacker could simply wait for the legitimate user to complete
+	authentication. A simple implementation is to define sessions for each individual action requiring
+	identity verification such as updating a password, registering new passkeys, or deleting an
+	account. This also makes it easy to ensure that the verification is single-use and strictly tied
+	to a specific action.
+</p>
