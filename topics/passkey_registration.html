@@ -54,8 +54,9 @@
 	authenticators such as security keys, and also requires user verification even when a credential
 	ID is supplied. If you plan to make user verification optional when the passkey is used as a
 	second factor, use <code>"userVerificationOptionalWithCredentialIDList"</code> instead.
-	<code>enforceCredentialProtectionPolicy</code> must be set to <code>false</code> to avoid blocking
-	devices that do not support the extension, such as software-based authenticators. See my blog
+	<code>enforceCredentialProtectionPolicy</code>
+	must be set to <code>false</code> to avoid blocking devices that do not support the extension,
+	such as software-based authenticators. See my blog
 	<a href="https://pilcrowonpaper.com/blog/16">
 		Understanding WebAuthn credential protection policy
 	</a>
@@ -90,9 +91,10 @@
 	The extensions data in the authenticator data is usually empty unless you explicitly pass
 	extension inputs to <code>navigator.credentials.create()</code>. However, Chrome automatically
 	includes the
-	<code>credentialProtectionPolicy</code> extension input unless it is already defined, so extension
-	data may still be included even if you didn't provide any extensions yourself. If defined, the
-	CBOR map will contain a <code>credProtect</code> key with one of three values: integer 1 for
+	<code>credentialProtectionPolicy</code>
+	extension input unless it is already defined, so extension data may still be included even if you
+	didn't provide any extensions yourself. If defined, the CBOR map will contain a
+	<code>credProtect</code> key with one of three values: integer 1 for
 	<code>userVerificationOptional</code>, integer 2 for
 	<code>userVerificationOptionalWithCredentialIDList</code>, and integer 3 for
 	<code>userVerificationRequired</code>. If you set the extension input to

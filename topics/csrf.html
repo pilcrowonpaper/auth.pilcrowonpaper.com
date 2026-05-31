@@ -20,13 +20,15 @@
 <p>
 	First, it’s important to clarify the difference between “origin” and “site.” In the context of
 	same-origin and cross-origin, an origin refers to the exact domain, including the subdomain.
-	<code>foo.example.com</code> and <code>bar.example.com</code> are considered different origins. A
-	site, however, refers to the root domain. <code>foo.example.com</code> and
+	<code>foo.example.com</code>
+	and <code>bar.example.com</code> are considered different origins. A site, however, refers to the
+	root domain. <code>foo.example.com</code> and
 	<code>bar.example.com</code>
 	are considered same-site. Note that browsers also take the Public Suffix List into account when
 	determining the root domain. For example, <code>github.io</code>, which is used by GitHub Pages to
 	host user-created sites, is included in this list, so <code>foo.github.io</code> and
-	<code>bar.github.io</code> are treated as different sites.
+	<code>bar.github.io</code>
+	are treated as different sites.
 </p>
 
 <p>
@@ -45,18 +47,18 @@
 	differentiate requests. You must properly parse and validate the header even if you only accept
 	other data types like JSON. You must also reject requests that don't include the header. Do not
 	use a simple string match for validating the header. For example, a header value of
-	<code>text/plain; application/json</code> has the MIME type <code>text/plain </code> and will be
-	allowed by the browser. Even with proper validation, I still recommend taking further CSRF
-	mitigations.
+	<code>text/plain; application/json</code>
+	has the MIME type <code>text/plain </code> and will be allowed by the browser. Even with proper
+	validation, I still recommend taking further CSRF mitigations.
 </p>
 
 <p>
 	The simplest method to prevent CSRF is to set the <code>SameSite</code> cookie attribute to
-	<code>Strict</code> or <code>Lax</code>. <code>Strict</code> ensures the cookie is not included in
-	any cross-site requests, while <code>Lax</code> ensures that cookie is only included in GET and
-	GET-like request (HEAD, OPTIONS, TRACE). Using <code>Strict</code> will block the cookie from
-	being sent when the user is redirected from a third-party site, which is usually not the desired
-	behavior.
+	<code>Strict</code>
+	or <code>Lax</code>. <code>Strict</code> ensures the cookie is not included in any cross-site
+	requests, while <code>Lax</code> ensures that cookie is only included in GET and GET-like request
+	(HEAD, OPTIONS, TRACE). Using <code>Strict</code> will block the cookie from being sent when the
+	user is redirected from a third-party site, which is usually not the desired behavior.
 </p>
 
 <p>
@@ -71,10 +73,11 @@
 <p>
 	As such, I recommend implementing a strict origin check on the server and rejecting non-GET
 	requests originating from untrusted origins. The simplest way to do this is by checking the
-	<code>Sec-Fetch-Site</code> header. This header is included in all browser requests (not just
-	those sent with the Fetch Web API) and indicates the relationship between the initiating website
-	and the target server. Because it is a forbidden header, client-side JavaScript cannot modify it.
-	For non-GET requests, reject any request where the header is missing or the value is not
+	<code>Sec-Fetch-Site</code>
+	header. This header is included in all browser requests (not just those sent with the Fetch Web
+	API) and indicates the relationship between the initiating website and the target server. Because
+	it is a forbidden header, client-side JavaScript cannot modify it. For non-GET requests, reject
+	any request where the header is missing or the value is not
 	<code>same-origin</code>. Although the header has only been widely supported since 2023, unlike
 	the SameSite cookie attribute, you can still block older browsers by simply rejecting requests
 	that do not include the header. Headers prefixed with <code>Sec-</code> have also been part of the
@@ -85,10 +88,11 @@
 
 <p>
 	If you need to support older browsers or allow requests from subdomains, use the
-	<code>Origin</code> header. This includes the origin of the request source and has been part of
-	the forbidden request headers since 2008. All major browsers have included this header on most
-	requests since around 2020 at the latest, though some adopted it earlier. Block requests that do
-	not include the header or that originate from sources not present in a list of trusted origins.
+	<code>Origin</code>
+	header. This includes the origin of the request source and has been part of the forbidden request
+	headers since 2008. All major browsers have included this header on most requests since around
+	2020 at the latest, though some adopted it earlier. Block requests that do not include the header
+	or that originate from sources not present in a list of trusted origins.
 </p>
 
 <p>

@@ -3,13 +3,14 @@
 <p>
 	The client data is a JSON object containing information about the client and the context of the
 	WebAuthn operation. The <code>type</code> key indicates the operation type, using
-	<code>"webauthn.create"</code> for registration and <code>"webauthn.get"</code> for
-	authentication. The <code>challenge</code> key carries the Base64url-encoded challenge string
-	issued by the relying party. Next, the <code>origin</code> key specifies the URL origin that
-	initiated the credential request and must always be validated against trusted origins. Finally,
-	the optional <code>crossOrigin</code> value is set to <code>true</code> when the request is
-	performed within an iframe, and is omitted when the request is not cross-origin. All values should
-	be validated and match the expected value.
+	<code>"webauthn.create"</code>
+	for registration and <code>"webauthn.get"</code> for authentication. The
+	<code>challenge</code> key carries the Base64url-encoded challenge string issued by the relying
+	party. Next, the <code>origin</code> key specifies the URL origin that initiated the credential
+	request and must always be validated against trusted origins. Finally, the optional
+	<code>crossOrigin</code> value is set to <code>true</code> when the request is performed within an
+	iframe, and is omitted when the request is not cross-origin. All values should be validated and
+	match the expected value.
 </p>
 
 <pre><code>{

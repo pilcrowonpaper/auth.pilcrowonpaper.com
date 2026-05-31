@@ -51,15 +51,15 @@
 	contain the credential public key encoded as a COSE key in CBOR format. This is the final element
 	of the attested credential data. See the pages for each algorithm for details on COSE formats:
 	<a href="/ecdsa">ECDSA</a>, <a href="/rsassapkcs1v15">RSASSA PKCS#1 v1.5</a>, and
-	<a href="/eddsa">EdDSA</a>. Also see the <a href="/webauthn-cbor-encoding"
-		>WebAuthn CBOR encoding</a
-	> page for details on CBOR parsing. Note that the signature algorithm is embedded within the COSE
-	public key.
+	<a href="/eddsa">EdDSA</a>. Also see the
+	<a href="/webauthn-cbor-encoding">WebAuthn CBOR encoding</a> page for details on CBOR parsing.
+	Note that the signature algorithm is embedded within the COSE public key.
 </p>
 
 <p>
 	Finally, if the extensions data included flag is set to 1, the remaining bytes contain a
 	CBOR-encoded map of extensions. See the
-	<a href="/webauthn-cbor-encoding">WebAuthn CBOR encoding</a> page for parsing details. In general,
-	you should reject any extension data that you did not explicitly request or expect.
+	<a href="/webauthn-cbor-encoding">WebAuthn CBOR encoding</a>
+	page for parsing details. In general, you should reject any extension data that you did not
+	explicitly request or expect.
 </p>

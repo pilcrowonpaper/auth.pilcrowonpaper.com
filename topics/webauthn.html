@@ -54,10 +54,12 @@
 <p>
 	The relying party is identified by its relying party ID, which is a domain. A website can identify
 	itself as a relying party using either its current domain or any parent domain. For example,
-	<code>foo.example.com</code> can use either <code>foo.example.com</code> or
+	<code>foo.example.com</code>
+	can use either <code>foo.example.com</code> or
 	<code>example.com</code>. Similar to the definition of same-site origins, browsers take the public
 	suffix list into account. For example, <code>foo.github.io</code> cannot use
-	<code>github.io</code> as its relying party ID because it is a public suffix.
+	<code>github.io</code>
+	as its relying party ID because it is a public suffix.
 </p>
 
 <h2>Registration</h2>
@@ -73,7 +75,8 @@
 
 <p>
 	A credential can be created using <code>navigator.credentials.create()</code> by passing the
-	<code>publicKey</code> option.
+	<code>publicKey</code>
+	option.
 </p>
 
 <pre><code>const credential = await navigator.credentials.create({
@@ -132,10 +135,10 @@
 	the relying party supports. Since there is only a single credential type,
 	<code>public-key</code>, this is primarily used to specify the supported signature algorithms.
 	Note that these algorithms are identified using the
-	<a href="https://www.iana.org/assignments/cose/cose.xhtml">COSE algorithm IDs</a> defined in the
-	IANA registry. Confusingly, the signature algorithm also determines the public key type, even
-	though multiple public key types can theoretically support the same signature algorithm. Some
-	commonly used algorithms include:
+	<a href="https://www.iana.org/assignments/cose/cose.xhtml">COSE algorithm IDs</a>
+	defined in the IANA registry. Confusingly, the signature algorithm also determines the public key
+	type, even though multiple public key types can theoretically support the same signature
+	algorithm. Some commonly used algorithms include:
 </p>
 
 <ul>
@@ -156,11 +159,13 @@
 
 <p>
 	The <code>authenticatorSelection</code> object specifies the type of credential to create.
-	<code>residentKey</code> should be set to <code>"required"</code> when creating a discoverable
-	credential and <code>"discouraged"</code> otherwise. The
-	<code>requireResidentKey</code> option is deprecated, but should still be included for backward
-	compatibility. The <code>userVerification</code> option controls whether the authenticator should
-	verify the user and accepts one of <code>"required"</code>, <code>"preferred"</code>, or
+	<code>residentKey</code>
+	should be set to <code>"required"</code> when creating a discoverable credential and
+	<code>"discouraged"</code> otherwise. The
+	<code>requireResidentKey</code>
+	option is deprecated, but should still be included for backward compatibility. The
+	<code>userVerification</code> option controls whether the authenticator should verify the user and
+	accepts one of <code>"required"</code>, <code>"preferred"</code>, or
 	<code>"discouraged"</code>. In practice, this is mainly used to ensure that the authenticator
 	supports user verification. Requiring user verification during registration does not imply that it
 	will also be required during authentication.
@@ -170,12 +175,13 @@
 	The <code>attestation</code> property specifies the type of attestation the relying party
 	requires. <code>"none"</code> indicates that the relying party does not require attestation. Note
 	that the authenticator may omit device-identifying information entirely, including the AAGUID.
-	<code>"direct"</code> indicates that the relying party requires attestation from the authenticator
-	itself, which typically reveals information about the authenticator model without identifying the
-	specific device. <code>"indirect"</code> is similar to <code>"direct"</code>, except the client
-	(browser) may replace the attestation with a more privacy-preserving format, such as one issued by
-	a third-party certificate authority. In this case, detailed device information may not be
-	available, though the attestation can still be used to verify the authenticator’s capabilities and
+	<code>"direct"</code>
+	indicates that the relying party requires attestation from the authenticator itself, which
+	typically reveals information about the authenticator model without identifying the specific
+	device. <code>"indirect"</code> is similar to <code>"direct"</code>, except the client (browser)
+	may replace the attestation with a more privacy-preserving format, such as one issued by a
+	third-party certificate authority. In this case, detailed device information may not be available,
+	though the attestation can still be used to verify the authenticator’s capabilities and
 	trustworthiness. Finally, <code>"enterprise"</code> indicates that the relying party is requesting
 	enterprise attestation, which can uniquely identify a specific device. The authenticator must
 	explicitly allow the relying party before this type of attestation can be returned.
@@ -186,23 +192,22 @@
 	prevent authenticators that already own those credentials from creating new ones.
 </p>
 
-<p>
-	Finally, the <code>extensions</code> property can be used to define extension inputs.
-</p>
+<p>Finally, the <code>extensions</code> property can be used to define extension inputs.</p>
 
 <p>
 	The returned promise will reject with an <code>Error</code>. The name will be
-	<code>NotAllowedError</code> if the user cancels the process, or
-	<code>NotSupportedError</code> if the authenticator cannot create a credential that satisfies the
-	provided requirements.
+	<code>NotAllowedError</code>
+	if the user cancels the process, or
+	<code>NotSupportedError</code>
+	if the authenticator cannot create a credential that satisfies the provided requirements.
 </p>
 
 <p>
 	If a credential is successfully created, the returned promise resolves to a
 	<code>PublicKeyCredential</code>, which its <code>response</code> property contains an
 	<code>AuthenticatorAttestationResponse</code>. This includes the attestation object as
-	<code>AuthenticatorAttestationResponse.attestationObject</code> and the UTF-8–serialized,
-	JSON-encoded client data object as
+	<code>AuthenticatorAttestationResponse.attestationObject</code>
+	and the UTF-8–serialized, JSON-encoded client data object as
 	<code>AuthenticatorAttestationResponse.clientDataJSON</code>.
 </p>
 
@@ -211,13 +216,15 @@
 	the authenticator data. The attestation statement must be parsed based on the format. The
 	authenticator data is binary data structure that includes the credential ID, AAGUID, public key,
 	and various other metadata about the authenticator. See the
-	<a href="/webauthn-authenticator-data">WebAuthn authenticator data</a> page for details. Do not
-	forget to verify that the public key is valid and one of the supported type.
+	<a href="/webauthn-authenticator-data">WebAuthn authenticator data</a>
+	page for details. Do not forget to verify that the public key is valid and one of the supported
+	type.
 </p>
 
 <p>
 	The client data is a JSON object that includes information about the client. See the
-	<a href="/webauthn-client-data">WebAuthn client data</a> page for details.
+	<a href="/webauthn-client-data">WebAuthn client data</a>
+	page for details.
 </p>
 
 <p>
@@ -257,7 +264,8 @@
 	is available as
 	<code>PublicKeyCredential.rawId</code>, and the public key can be obtained using
 	<code>AuthenticatorAttestationResponse.getPublicKey()</code>. The key is returned as a
-	<code>SubjectPublicKeyInfo</code> ASN.1 structure encoded in DER format, as defined in
+	<code>SubjectPublicKeyInfo</code>
+	ASN.1 structure encoded in DER format, as defined in
 	<a href="https://datatracker.ietf.org/doc/html/rfc5280">RFC 5280</a>. You must also retrieve the
 	COSE algorithm ID via <code>AuthenticatorAttestationResponse.getPublicKeyAlgorithm()</code>, since
 	the public key does not include the signing algorithm. Note that Safari only supports algorithm -7
@@ -276,7 +284,8 @@
 
 <p>
 	To verify an authenticator, use <code>navigator.credentials.get()</code> with the
-	<code>publicKey</code> option.
+	<code>publicKey</code>
+	option.
 </p>
 
 <pre><code>const credential = await navigator.credentials.get({
@@ -290,9 +299,7 @@
 	},
 });</code></pre>
 
-<p>
-	The <code>challenge</code> option contains the generated challenge.
-</p>
+<p>The <code>challenge</code> option contains the generated challenge.</p>
 
 <p>
 	The <code>allowCredentials</code> option can be used to restrict valid credentials and to list IDs
