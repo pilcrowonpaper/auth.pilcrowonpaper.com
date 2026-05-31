@@ -1,1 +1,63 @@
 <h1>Edwards Curve Digital Signature Algorithm (EdDSA)</h1>
+
+<p>
+	The Edwards-curve Digital Signature Algorithm (EdDSA) is an asymmetric digital signature scheme
+	based on elliptic curves. It serves as a modern, high-performance alternative to
+	<a href="/ecdsa">ECDSA</a>.
+</p>
+
+<p>
+	The private key is a random integer <code>k</code> encoded as a bit string, and the corresponding
+	public key is a point on the curve <code>A</code> compressed and encoded as a bit string. The
+	signature consists of a pair of integers <code>(r, s)</code> which are also compressed and encoded
+	into a single bit string.
+</p>
+
+<p>
+	Unlike ECDSA, the parameters for EdDSA schemes are typically pre-defined. Ed25519 uses the
+	Curve25519 curve with the SHA-512 hash function and has a key size of 256 bits. Ed448 uses the
+	Curve448 curve with the SHAKE256 hash function and has a key size of 456 bits. These shouldn't be
+	confused with X25519 and X448, which are variants of Elliptic-curve Diffie–Hellman (ECDH).
+</p>
+
+<h2>Public key formats</h2>
+
+<h3>ANSI X9.62</h3>
+
+<p>
+	Also known as the X.509, SubjectPublicKeyInfo, or PKIX format. The public key is represented as a
+	DER-encoded ASN.1 <code>SubjectPublicKeyInfo</code> sequence.
+	<code>AlgorithmIdentifier.algorithm</code>
+	is either
+	<code>1.3.101.112</code>
+	for Ed25519 or <code>1.3.101.113</code> for Ed448. The <code>subjectPublicKey</code> is the raw
+	public key.
+</p>
+
+<pre><code>SubjectPublicKeyInfo := SEQUENCE {
+	algorithm			AlgorithmIdentifier,
+	subjectPublicKey	BIT STRING
+}
+
+AlgorithmIdentifier := SEQUENCE {
+	algorithm	OBJECT IDENTIFIER
+}</code></pre>
+
+<h3>COSE</h3>
+
+<p>
+	Defined in <a href="https://datatracker.ietf.org/doc/html/rfc8152">RFC 8152</a>, the public key is
+	represented as a CBOR-encoded OKP map. Although optional in the COSE specification, the algorithm
+	value (3) is always present in WebAuthn and holds the COSE algorithm identifier registered in the
+	<a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA registry</a>, which is usually -8
+	(EdDSA). The curve value (-1) is either <code>6</code> for Ed25519 or
+	<code>7</code>
+	for Ed448, and the x value (-2) contains the raw public key.
+</p>
+
+<pre><code>{
+	1: 4,
+	3: -7,
+	-1: 6,
+	-2: h'fjuLyU4qH41sWp8bPnwtWotOHJ8tajtcfh1Ki5wuXxo',
+}</code></pre>
