@@ -28,7 +28,7 @@ I hope this is useful for anyone looking to learn more about auth, security, and
 </p>
 <p>
 As the name implies, this book focuses heavily on the authentication and login system for your application.
-For more general security topics, see <a href="https://cheatsheetseries.owasp.org/index.html">OWASP Cheat Sheet Series</a>.
+For more general security topics, see the <a href="https://cheatsheetseries.owasp.org/index.html">OWASP Cheat Sheet Series</a>.
 </p>
 <p>
 If you have any questions, feel free to ask them on the <a href="https://discord.gg/zZqCfVUMnX">Discord server</a> or on <a href="https://github.com/pilcrowonpaper/auth.pilcrowonpaper.com/discussions">GitHub Discussions</a>.
