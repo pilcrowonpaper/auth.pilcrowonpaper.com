@@ -161,11 +161,13 @@
 	The <code>authenticatorSelection</code> object specifies the type of credential to create.
 	<code>residentKey</code>
 	should be set to <code>"required"</code> when creating a discoverable credential and
-	<code>"discouraged"</code> otherwise. The
+	<code>"discouraged"</code>
+	otherwise. The
 	<code>requireResidentKey</code>
 	option is deprecated, but should still be included for backward compatibility. The
-	<code>userVerification</code> option controls whether the authenticator should verify the user and
-	accepts one of <code>"required"</code>, <code>"preferred"</code>, or
+	<code>userVerification</code>
+	option controls whether the authenticator should verify the user and accepts one of
+	<code>"required"</code>, <code>"preferred"</code>, or
 	<code>"discouraged"</code>. In practice, this is mainly used to ensure that the authenticator
 	supports user verification. Requiring user verification during registration does not imply that it
 	will also be required during authentication.
@@ -331,7 +333,8 @@
 	the credential ID. To verify the signature, first compute the SHA-256 hash of the client data
 	JSON. Then build the signed message by concatenating the authenticator data first, followed by the
 	hash of the client data JSON. Verify the signature against this message. If verification fails or
-	the public key is invalid, the process must fail.
+	the public key is invalid, the process must fail. Note that for ECDSA, the signature is in the
+	ANSI X9.62 (ASN.1) format.
 </p>
 
 <p>
