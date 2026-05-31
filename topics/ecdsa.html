@@ -1,1 +1,121 @@
 <h1>Elliptic Curve Digitial Signature Algorithm (ECDSA)</h1>
+
+<p>
+	Elliptic Curve Digital Signature Algorithm (ECDSA) is a digital signature scheme defined in
+	<a href="https://www.secg.org/sec1-v2.pdf">SEC 1</a>
+	that uses elliptic-curve cryptography. It achieves security comparable to RSA-based schemes while
+	using significantly smaller keys and signatures.
+</p>
+
+<p>
+	The elliptic curve used with ECDSA is configurable. A widely adopted choice is the set of
+	NIST-recommended curves, with P-256 (secp256r1) being the most commonly used. This curve is
+	generally considered to provide around 128 bits of security.
+</p>
+
+<p>
+	The private key is a randomly generated integer <code>d</code>. The corresponding public key is a
+	point on the elliptic curve derived from this value, represented as a pair of integers
+	<code>(x, y)</code>. The signature consists of two integers, <code>r</code> and
+	<code>s</code>, whose values depend on both the message and the private key.
+</p>
+
+<p>
+	When generating and verifying a signature, a hash function is used to hash the message. A common
+	choice is using the SHA-256 hash function with the P-256 curve. However, the hash function is
+	independent of the curve and any hash algorithm can be used with any key pair.
+</p>
+
+<h2>Public key formats</h2>
+
+<h3>SEC 1</h3>
+
+<p>
+	Originally defined in the SEC 1 specification, this format represents an elliptic curve public key
+	using its coordinates <code>(x, y)</code> on the curve. For the P-256 curve, both the
+	<code>x</code>
+	and
+	<code>y</code>
+	coordinates are 32 bytes each.
+</p>
+
+<pre><code>0x04 || x || y</code></pre>
+
+<p>
+	The public key can also be represented in a compressed format, which stores only the
+	<code>x</code>
+	coordinate. The header byte is <code>0x02</code> if <code>y</code> is even or <code>0x03</code> if
+	it is odd.
+</p>
+
+<pre><code>0x02 || x
+0x03 || x</code></pre>
+
+<h3>ANSI X9.62</h3>
+
+<p>
+	Also known as the X.509, SubjectPublicKeyInfo, or PKIX format. The public key is represented as a
+	DER-encoded ASN.1 <code>SubjectPublicKeyInfo</code> sequence.
+	<code>AlgorithmIdentifier.algorithm</code>
+	is
+	<code>1.2.840.10045.2.1</code>. The <code>subjectPublicKey</code> is either the uncompressed or
+	compressed SEC1 format public key.
+</p>
+
+<p>
+	For the P-256, the object identifier of <code>AlgorithmIdentifier.namedCurve</code> is
+	<code>1.2.840.10045.3.1.7</code>
+</p>
+
+<pre><code>SubjectPublicKeyInfo := SEQUENCE {
+	algorithm			AlgorithmIdentifier,
+	subjectPublicKey	BIT STRING
+}
+
+AlgorithmIdentifier := SEQUENCE {
+	algorithm	OBJECT IDENTIFIER
+	namedCurve	OBJECT IDENTIFIER
+}</code></pre>
+
+<h3>COSE</h3>
+
+<p>
+	Defined in <a href="https://datatracker.ietf.org/doc/html/rfc8152">RFC 8152</a>, the public key is
+	represented as a CBOR-encoded EC2 key map. Although optional in the COSE specification, the
+	algorithm value (3), x-coordinate (-2), and y-coordinate (-3) will always be defined in WebAuthn.
+	The algorithm value is a COSE identifier registered in the
+	<a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA registry</a>. The x and y values
+	are encoded as binary strings. For the P-256 curve, these are exactly 32 bytes each.
+</p>
+
+<pre><code>{
+	1: 2,
+	3: -7,
+	-1: 1,
+	-2: h'0000000000000000000000000000000000000000000000000000000000000000',
+	-3: h'0000000000000000000000000000000000000000000000000000000000000000'
+}</code></pre>
+
+<h2>Signature formats</h2>
+
+<h3>IEEE P1363</h3>
+
+<p>
+	In this format, the signature is represented as a simple concatenation of the integer pair
+	<code>(r, s)</code>, with each encoded as a big-endian binary string. For the P-256 curve, these
+	are 32 bytes each.
+</p>
+
+<pre><code>r || s</code></pre>
+
+<h3>ANSI X9.62</h3>
+
+<p>
+	Also referred to simply as the ASN.1 format. In this format, the signature is represented as a
+	DER-encoded ASN.1 sequence containing the integer pair <code>(r, s)</code>.
+</p>
+
+<pre><code>SEQUENCE {
+	r	INTEGER,
+	s	INTEGER
+}</code></pre>
