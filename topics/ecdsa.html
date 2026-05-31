@@ -4,9 +4,8 @@
 	Elliptic Curve Digital Signature Algorithm (ECDSA) is an asymmetric digital signature scheme
 	defined in
 	<a href="https://www.secg.org/sec1-v2.pdf">SEC 1</a>
-	that uses elliptic-curve cryptography.A private key is used to sign a message, and the
-	corresponding public key is used to verify the signature. It achieves security comparable to
-	RSA-based schemes while using significantly smaller keys and signatures.
+	that uses elliptic-curve cryptography. It achieves security comparable to RSA-based schemes while
+	using significantly smaller keys and signatures.
 </p>
 
 <p>
@@ -84,10 +83,12 @@ AlgorithmIdentifier := SEQUENCE {
 <p>
 	Defined in <a href="https://datatracker.ietf.org/doc/html/rfc8152">RFC 8152</a>, the public key is
 	represented as a CBOR-encoded EC2 key map. Although optional in the COSE specification, the
-	algorithm value (3), x-coordinate (-2), and y-coordinate (-3) will always be defined in WebAuthn.
-	The algorithm value is a COSE identifier registered in the
-	<a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA registry</a>. The x and y values
-	are encoded as binary strings. For the P-256 curve, these are exactly 32 bytes each.
+	algorithm value (3) and y-coordinate (-3) will always be defined in WebAuthn. The algorithm value
+	is a COSE algorithm identifier registered in the
+	<a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA registry</a>
+	(usually ECDSA with the hash function). The curve value (-1) is one of the curve identifier also
+	registered in the IANA registry. The x and y values (-2, -3) are encoded as binary strings. For
+	the P-256 curve, the curve identifier is 1, and the x and y values are exactly 32 bytes each.
 </p>
 
 <pre><code>{
