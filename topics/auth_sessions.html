@@ -28,6 +28,16 @@
 </p>
 
 <p>
+	Whether auth sessions should be invalidated after a user updates their password is a separate
+	discussion. My personal view is that it's a good idea to ask users whether they want to sign out
+	of all devices immediately after changing their password, but it shouldn't be mandatory. Users
+	often update their password because they've forgotten it or simply as a preventative measure. It's
+	also uncommon to invalidate existing sessions when passkeys are registered or removed. If you do
+	choose to invalidate all sessions after a password change, always make that clear so users aren’t
+	left guessing.
+</p>
+
+<p>
 	I would recommend issuing a new authenticated session after a successful identity verification or
 	re-verification. This should also apply to other session types. The purpose of identity
 	verification is to prevent malicious actors from using stolen session tokens. However, if the
