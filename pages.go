@@ -22,9 +22,9 @@ func createHomePageHTML(topics []topicStruct) string {
 
 	contentHTMLTemplate := `<h1>Auth book</h1>
 <p>This is my personal auth book.
-It is a collection of guides, recommendations, and examples for implementing auth in web applications.
+It is a collection of guides, recommendations, and examples for implementing auth in web applications based on my personal opinion.
 It is completely free with zero ads.
-I hope this is useful for anyone looking to implement auth from scratch or simply learn more about the web and security.
+I hope this is useful for anyone looking to learn more about auth, security, and the web in general.
 </p>
 <p>
 If you have any questions, feel free to ask them on the <a href="https://discord.gg/zZqCfVUMnX">Discord server</a> or on <a href="https://github.com/pilcrowonpaper/auth.pilcrowonpaper.com/discussions">GitHub Discussions</a>.
@@ -37,7 +37,7 @@ Source code available on <a href="https://github.com/pilcrowonpaper/auth.pilcrow
 <h2>Topics</h2>
 %s
 <h2>Examples</h2>
-<p>Complete, fully open-source example websites written in Go.</p>
+<p>Complete, fully open-source example websites written in Go based on the contents of the book.</p>
 <ul>
 	<li><a href="https://basic-example.auth.pilcrowonpaper.com">Basic auth example</a>: Password example with email address verification and password reset (<a href="https://github.com/pilcrowonpaper/basic-example.auth.pilcrowonpaper.com">source code</a>).</li>
 	<li><a href="https://passwordless-example.auth.pilcrowonpaper.com">Passwordless auth example</a>: Passkey and email code sign-in example with email address verification (<a href="https://github.com/pilcrowonpaper/passwordless-example.auth.pilcrowonpaper.com">source code</a>).</li>
