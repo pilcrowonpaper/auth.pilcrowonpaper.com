@@ -54,10 +54,18 @@ Source code available on <a href="https://github.com/pilcrowonpaper/auth.pilcrow
 }
 
 func createTopicPageHTML(topicTitle string, topicPathId string, contentHTML string) string {
-	pageTitle := fmt.Sprintf("%s | Auth book", topicTitle)
 	pagePath := fmt.Sprintf("/%s", topicPathId)
 
-	pageHTML := createPageHTML(pageTitle, pagePath, contentHTML)
+	pageHTML := createPageHTML(topicTitle, pagePath, contentHTML)
+
+	return pageHTML
+}
+
+func createNotFoundPage() string {
+	contentHTML := `<h1>Page not found</h1>
+<p>The page you're looking for doesn't exist.</p>`
+
+	pageHTML := createPageHTML("Page not found", "", contentHTML)
 
 	return pageHTML
 }
@@ -73,6 +81,11 @@ var stylesheetCSS string
 
 func createPageHTML(pageTitle string, pagePath string, contentHTML string) string {
 	pageURL := path.Join("https://auth.pilcrowonpaper.com", pagePath)
+
+	var canonicalLinkHTML string
+	if pagePath != "" {
+		canonicalLinkHTML = fmt.Sprintf(`<link rel="canonical" href="%s">`, pageURL)
+	}
 
 	pageHTMLTemplate := `<!DOCTYPE html>
 <html lang="en">
@@ -96,7 +109,7 @@ func createPageHTML(pageTitle string, pagePath string, contentHTML string) strin
 
     <link rel="icon" type="image/jpeg" href="https://pilcrowonpaper.com/pilcrow.jpeg">
 
-    <link rel="canonical" href="%s">
+    %s
 
 	<style>%s</style>
 </head>
@@ -109,7 +122,15 @@ func createPageHTML(pageTitle string, pagePath string, contentHTML string) strin
 </body>
 </html>`
 
-	pageHTML := fmt.Sprintf(pageHTMLTemplate, html.EscapeString(pageTitle), html.EscapeString(pageTitle), html.EscapeString(pageURL), html.EscapeString(pageURL), stylesheetCSS, contentHTML)
+	pageHTML := fmt.Sprintf(
+		pageHTMLTemplate,
+		html.EscapeString(pageTitle),
+		html.EscapeString(pageTitle),
+		html.EscapeString(pageURL),
+		canonicalLinkHTML,
+		stylesheetCSS,
+		contentHTML,
+	)
 
 	return pageHTML
 }

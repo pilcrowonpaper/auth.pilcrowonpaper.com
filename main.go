@@ -124,6 +124,13 @@ func main() {
 		fmt.Printf("Failed to write file 'dist/index.html': %s\n", err.Error())
 		os.Exit(0)
 	}
+
+	notFoundPageHTML := createNotFoundPage()
+	err = os.WriteFile("dist/404.html", []byte(notFoundPageHTML), os.ModePerm)
+	if err != nil {
+		fmt.Printf("Failed to write file 'dist/404.html': %s\n", err.Error())
+		os.Exit(0)
+	}
 }
 
 func getH1TitleFromHTMLNode(htmlNode *html.Node) (string, bool) {
