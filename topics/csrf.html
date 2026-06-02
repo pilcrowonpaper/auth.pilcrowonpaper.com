@@ -8,13 +8,12 @@
 
 <p>
 	Browsers automatically attach relevant cookies to all outgoing requests, including those initiated
-	by malicious third-party websites. While the browser's same-origin policy (SOP) blocks most
-	cross-origin requests, it explicitly permits "simple requests". These include GET, HEAD, and
-	certain POST requests. If your server accepts these requests and store the session token inside a
-	cookie, a malicious website can send requets as the authenticated user. Note that the
-	vulnerability is specifically the browser’s automatic use of the user's cookies. A random person
-	manually sending requests with tools like cURL is not a CSRF vulnerability and should not be
-	treated as an attack.
+	by third-party websites. While the browser's same-origin policy (SOP) blocks most cross-origin
+	requests, it explicitly permits "simple requests". These include GET, HEAD, and certain POST
+	requests. If your server accepts these requests and store the auth session token inside a cookie,
+	a malicious website can send requets as the authenticated user. Note that the vulnerability is
+	specifically the browser’s automatic use of the user's cookies. A random person manually sending
+	requests with tools like cURL is not a CSRF vulnerability and should not be treated as an attack.
 </p>
 
 <p>
@@ -44,7 +43,7 @@
 	types:
 	<code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code>, or
 	<code>text/plain</code>. Note that the browser uses the header instead of the request body to
-	differentiate requests. You must properly parse and validate the header even if you only accept
+	identify the content type. You must properly parse and validate the header even if you only accept
 	other data types like JSON. You must also reject requests that don't include the header. Do not
 	use a simple string match for validating the header. For example, a header value of
 	<code>text/plain; application/json</code>
@@ -58,7 +57,9 @@
 	or <code>Lax</code>. <code>Strict</code> ensures the cookie is not included in any cross-site
 	requests, while <code>Lax</code> ensures that cookie is only included in GET and GET-like request
 	(HEAD, OPTIONS, TRACE). Using <code>Strict</code> will block the cookie from being sent when the
-	user is redirected from a third-party site, which is usually not the desired behavior.
+	user is redirected from a third-party site, which is usually not the desired behavior. As such,
+	<code>Lax</code>
+	should be the default value.
 </p>
 
 <p>
@@ -80,7 +81,7 @@
 	any request where the header is missing or the value is not
 	<code>same-origin</code>. Although the header has only been widely supported since 2023, unlike
 	the SameSite cookie attribute, you can still block older browsers by simply rejecting requests
-	that do not include the header. Headers prefixed with <code>Sec-</code> have also been part of the
+	that don't include the header. Headers prefixed with <code>Sec-</code> have also been part of the
 	browser forbidden header list since 2008 so the header cannot be spoofed even in legacy browsers.
 	Note that it doesn't matter that the header can be spoofed outside of browsers as CSRF is
 	fundamentally a browser-based attack.
@@ -90,17 +91,17 @@
 	If you need to support older browsers or allow requests from subdomains, use the
 	<code>Origin</code>
 	header. This includes the origin of the request source and has been part of the forbidden request
-	headers since 2008. All major browsers have included this header on most requests since around
-	2020 at the latest, though some adopted it earlier. Block requests that do not include the header
-	or that originate from sources not present in a list of trusted origins.
+	headers since 2008. All major browsers have included this header on all requests since around 2020
+	at the latest, though some adopted it earlier. Block requests that don't incude the header or
+	contain a header value that isn't explicitly whitelisted.
 </p>
 
 <p>
 	Finally, the oldest way to prevent CSRF is by using anti-CSRF tokens. Your server generates a
-	token on the initial visit, and that token is required for any valid form submission. Third-party
-	websites cannot access the token because the browser’s SOP prevents cross-origin sites from
-	reading responses and thus the embedded token. This approach is compatible with legacy browsers
-	and remains widely effective. See OWASP’s
+	token on the initial visit, and that token is required for any state-modifying actions such as
+	form submissions. Third-party websites cannot access the token because the browser’s SOP prevents
+	cross-origin sites from reading responses and thus the embedded token. This approach is compatible
+	with legacy browsers and remains widely effective. See OWASP’s
 	<a
 		href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html"
 		>CSRF</a

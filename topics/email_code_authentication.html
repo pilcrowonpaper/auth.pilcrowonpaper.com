@@ -3,14 +3,15 @@
 <p>
 	An email code authentication is an authentication method where a one-time code is sent to a user’s
 	email address and the user enters that code to verify their identity. This method can also be used
-	for password reset flows. This is my preferred option compared to using links.
+	for password reset flows. This is my preferred option compared to using single-use verification
+	links.
 </p>
 
 <p>
-	For implementing this flow, I recommend creating a session for the sign-in process and generating
-	a new email code for each session. Binding the code to a session links the verification attempt to
-	the device that initiated it. I also recommend not limiting the number of concurrent attempts or
-	codes per account, as it can be used to prevent a user from signing in.
+	For implementing this flow, I recommend creating a session for the authentication process and
+	generating a new email code for each attempt. Binding the code to a session links the verification
+	attempt to the device that initiated it. I also recommend not limiting the number of concurrent
+	attempts or codes per account, as it can be used to prevent a user from signing in.
 </p>
 
 <p>
@@ -19,8 +20,8 @@
 	limit should be set to 1 attempt per minute per user. For example, use a token bucket with a
 	maximum capacity of 5 tokens and a refill rate of 1 token per minute. With this configuration,
 	brute-forcing the code would require around 80 billion attempts to have at least a 50% chance of
-	guessing it. If the attack is targeted, it would take over a million years. You do not need to
-	track failed attempts either, as it does not meaningfully change the odds.
+	guessing it. You do not need to track failed attempts either, as it does not meaningfully change
+	the odds.
 </p>
 
 <p>
@@ -32,12 +33,12 @@
 </p>
 
 <p>
-	The code must be hashed using a strong password hashing algorithm such as Argon2 or bcrypt. While
-	40 bits of entropy is relatively high, it is still not comparable to session secrets and could be
-	brute-forced if a fast hash like SHA-256 is used. You can use a lighter configuration than you
-	would for user passwords. However, using Argon2id with 16 MiB of memory, 3 iterations, and a
-	parallelism of 1, for example, an attacker would need access to around 5,000 to 10,000 of the
-	latest GPUs to brute-force it within an hour.
+	The code must be hashed using a strong password hashing algorithm such as Argon2 or bcrypt. You
+	can use a lighter configuration for the algorithm than you would for user passwords. While 40 bits
+	of entropy is relatively high, it is still not comparable to session secrets and could be
+	brute-forced if a fast hash like SHA-256 is used. With Argon2id with 16 MiB of memory, 3
+	iterations, and a parallelism of 1, for example, an attacker would need access to around 5,000 to
+	10,000 of the latest GPUs to brute-force it within an hour.
 </p>
 
 <p>

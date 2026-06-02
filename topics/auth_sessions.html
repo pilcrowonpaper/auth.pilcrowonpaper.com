@@ -1,7 +1,7 @@
 <h1>Auth sessions</h1>
 
 <p>
-	Auth sessions is a <a href="/sessions">session</a> that keeps track of the user's authentication
+	An auth session is a <a href="/sessions">session</a> that keeps track of the user's authentication
 	state by holding the authenticated user ID. It is created when the client successfully signs in as
 	a user.
 </p>
@@ -38,12 +38,12 @@
 </p>
 
 <p>
-	I would recommend issuing a new authenticated session after a successful identity verification or
-	re-verification. This should also apply to other session types. The purpose of identity
-	verification is to prevent malicious actors from using stolen session tokens. However, if the
-	existing session is re-used, an attacker could simply wait for the legitimate user to complete
-	authentication. A simple implementation is to define sessions for each individual action requiring
-	identity verification such as updating a password, registering new passkeys, or deleting an
-	account. This also makes it easy to ensure that the verification is single-use and strictly tied
-	to a specific action.
+	A single authentication session, and any similar sessions, must be strictly tied to a single
+	successful authentication event. This is relevant for post sign-in identity verification. The core
+	purpose of identity verification is to prevent malicious actors from using stolen session tokens.
+	However, if the existing session is re-used, an attacker could simply wait for the legitimate user
+	to authenticate and then takeover the process. As such, I recommend using action-specifc sessions
+	for any action requiring identity verification such as updating a password, registering new
+	passkeys, or deleting an account. This also makes it easy to ensure that the verification is
+	single-use and strictly tied to a specific action.
 </p>

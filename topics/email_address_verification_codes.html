@@ -3,14 +3,14 @@
 <p>
 	Email verification codes are one-time codes sent to an email address. By asking the user to enter
 	the code, you can confirm ownership of the address. This is my preferred option compared to using
-	links.
+	single-use verification links.
 </p>
 
 <p>
-	The email verification code should be tied to a single session and a single email address. Binding
-	the code to a session links the verification attempt to the device that initiated it. Making each
-	email verification code unique per attempt further ensures that a malicious actor cannot trigger a
-	code to an email address they control and then use it to verify a different email address.
+	The verification code should be tied to a single session and a single email address. Binding the
+	code to a session links the verification attempt to the device that initiated it. Making each
+	email verification code unique per attempt ensures that a user cannot send a code to an email
+	address they control and then use it to verify a different email address.
 </p>
 
 <p>
@@ -21,14 +21,16 @@
 	address as the rate-limit key ensures that a malicious actor can’t bypass the limit by starting
 	multiple attempts or creating multiple accounts. As an example, you could use a token bucket with
 	a maximum capacity of 5 tokens and a refill rate of 1 token per minute for the rate limit. The
-	code does not need to be hashed before storage. You also do not need to keep track of unsuccessful
-	attempts. At this rate limit and expiration, doing so does not significantly change the odds of
+	code doesn't need to be hashed before storage. You also do not need to keep track of unsuccessful
+	attempts. At this rate limit and expiration, doing so doesn't significantly change the odds of
 	successfully brute-forcing the code.
 </p>
 
 <p>
 	However, if there are legitimate incentives to verify a particular address, you should use a
-	longer code and hash it using a password hashing algorithm such as Argon2.
+	longer code and hash it using a password hashing algorithm such as Argon2. Also see the
+	<a href="/email-code-authentication">Email code authentication</a>
+	page.
 </p>
 
 <p>
