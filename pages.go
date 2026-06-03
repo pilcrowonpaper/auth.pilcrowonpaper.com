@@ -48,7 +48,7 @@ Source code available on <a href="https://github.com/pilcrowonpaper/auth.pilcrow
 </ul>`
 	contentHTML := fmt.Sprintf(contentHTMLTemplate, topicsListHTML)
 
-	pageHTML := createPageHTML("Auth book", "/", contentHTML)
+	pageHTML := createPageHTML("Pilcrow's auth book", "/", contentHTML)
 
 	return pageHTML
 }
@@ -91,7 +91,7 @@ func createPageHTML(pageTitle string, pagePath string, contentHTML string) strin
 <html lang="en">
 <head>
 	<title>%s</title>
-	<meta name="description" content="Pilcrow's auth book.">
+	<meta name="description" content="Pilcrow's collection of guides, recommendations, and examples for implementing auth in web applications.">
 
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
@@ -99,8 +99,8 @@ func createPageHTML(pageTitle string, pagePath string, contentHTML string) strin
 	<meta property="og:title" content="%s">
 	<meta property="og:type" content="website">
 	<meta property="og:locale" content="en_US">
-	<meta property="og:site_name" content="Auth book">
-	<meta property="og:description" content="Pilcrow's auth book.">
+	<meta property="og:site_name" content="Pilcrow's auth book">
+	<meta property="og:description" content="Pilcrow's collection of guides, recommendations, and examples for implementing auth in web applications.">
 	<meta property="og:url" content="%s">
 	<meta property="og:image" content="https://pilcrowonpaper.com/pilcrow.jpeg">
 
