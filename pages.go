@@ -115,8 +115,8 @@ func createPageHTML(pageTitle string, pagePath string, contentHTML string) strin
 </head>
 
 <body>
-	<header>
-		<a id="home-link" href="/"><img id="pilcrow-icon" src="https://pilcrowonpaper.com/pilcrow.jpeg" alt="Pilcrow"><p>Auth book</p></a>
+<header>
+		<a id="home-link" href="/"><img id="pilcrow-icon" src="https://pilcrowonpaper.com/pilcrow.jpeg" alt="Pilcrow"></a>
 	</header>
 	<main>%s</main>
 </body>
