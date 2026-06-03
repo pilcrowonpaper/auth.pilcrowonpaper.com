@@ -1,6 +1,11 @@
 <h1>Passkey registration</h1>
 
 <p>
+	Before the user can register a passkey, they should be prompted to verify their identity using any
+	of their existing authentication methods.
+</p>
+
+<p>
 	Passkeys are discoverable WebAuthn credentials that use user verification and do not require
 	attestation.
 </p>
@@ -63,15 +68,15 @@
 	for more details on the credential protection policy.
 </p>
 
-<p>The public key must be properly validated before storage:</p>
+<p>The public key must be properly validated in the server:</p>
 
 <ul>
 	<li>
 		ES256: Ensure that the public key uses the P-256 curve and SHA-256 for signatures. Optionally
 		validate the public key by checking that the point lies on the curve and is not the point at
 		infinity. See <a href="https://www.secg.org/sec1-v2.pdf">SEC1 section 3.2.2.1</a>. If you skip
-		this validation, ensure that the signature verification library you use does not panic when
-		given an invalid public key during authentication.
+		this validation, ensure that the signature verification library you use doesn't panic when given
+		an invalid public key during authentication.
 	</li>
 	<li>
 		RS256: Ensure that the modulus <code>N</code> is a 2048-bit integer with no leading zeroes and
@@ -82,8 +87,8 @@
 	<li>
 		EdDSA: Ensure that the curve is Ed25519. Optionally validate that the public key point lies on
 		the curve. Unlike ECDSA, the EdDSA specification explicitly requires implementations to reject
-		invalid public keys, although many implementations do not enforce this. If you skip validation,
-		ensure that the library you use does not panic when given an invalid public key.
+		invalid public keys, although many implementations don't enforce this. If you skip validation,
+		ensure that the library you use doesn't panic when given an invalid public key.
 	</li>
 </ul>
 
@@ -98,7 +103,7 @@
 	key with one of three values: integer 1 for
 	<code>userVerificationOptional</code>, integer 2 for
 	<code>userVerificationOptionalWithCredentialIDList</code>, and integer 3 for
-	<code>userVerificationRequired</code>. If you set the extension input to
+	<code>userVerificationRequired</code>. If you explicitly set the extension input to
 	<code>"userVerificationRequired"</code>, you can simply check that the extension data equals:
 </p>
 
@@ -107,7 +112,25 @@
 <p>
 	Note that even if you explicitly set the extension input, credential protection policy support is
 	limited to roaming authenticators that implement the latest standard. Software-based
-	authenticators, such as password managers, generally do not support it and will not include
+	authenticators, such as password managers, generally don't support it and won't include the
 	extensions data in the authenticator data. As such, you must also allow authenticator data that
-	does not include extensions data.
+	doesn't include the extensions data.
+</p>
+
+<p>
+	Don't forget to check the number of passkeys the user already has, and reject the request if
+	they've reached the limit.
+</p>
+
+<p>
+	After creating a passkey, the user should be prompted to name it. To make things smoother, it's
+	helpful to set the default value to a name inferred from the AAGUID. However, you generally only
+	need to do this for software-based authenticators like password managers. Security keys typically
+	don't return the AAGUID when attestation is disabled, and users often carry multiple hardware
+	keys. Since there is no global registry of AAGUIDs, you'll need to compile the AAGUIDs of commonly
+	used authenticators into a
+	<a
+		href="https://github.com/pilcrowonpaper/passwordless-example.auth.pilcrowonpaper.com/blob/main/server_assets/webauthn_authenticators.json"
+		>single list</a
+	>.
 </p>

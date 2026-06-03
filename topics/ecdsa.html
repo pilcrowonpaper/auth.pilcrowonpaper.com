@@ -9,9 +9,8 @@
 </p>
 
 <p>
-	The elliptic curve used with ECDSA is configurable. A widely adopted choice is the set of
-	NIST-recommended curves, with P-256 (secp256r1) being the most commonly used. This curve is
-	generally considered to provide around 128 bits of security.
+	The elliptic curve used with ECDSA is configurable. NIST-recommended curves are often used, with
+	P-256 (secp256r1) being by far the most common.
 </p>
 
 <p>
@@ -32,8 +31,8 @@
 <h3>SEC 1</h3>
 
 <p>
-	Originally defined in the SEC 1 specification, this format represents an elliptic curve public key
-	using its coordinates <code>(x, y)</code> on the curve. For the P-256 curve, both the
+	Originally defined in the SEC 1 specification, this public key is a concatenation of the integer
+	pair with a header byte. For the P-256 curve, both the
 	<code>x</code>
 	and
 	<code>y</code>
@@ -83,12 +82,16 @@ AlgorithmIdentifier := SEQUENCE {
 <p>
 	Defined in <a href="https://datatracker.ietf.org/doc/html/rfc8152">RFC 8152</a>, the public key is
 	represented as a CBOR-encoded EC2 key map. Although optional in the COSE specification, the
-	algorithm value (3) and y-coordinate (-3) will always be defined in WebAuthn. The algorithm value
-	is a COSE algorithm identifier registered in the
+	algorithm value (3) will always be defined in WebAuthn. The algorithm value is a COSE algorithm
+	identifier registered in the
 	<a href="https://www.iana.org/assignments/cose/cose.xhtml">IANA registry</a>
 	(usually ECDSA with the hash function). The curve value (-1) is one of the curve identifier also
-	registered in the IANA registry. The x and y values (-2, -3) are encoded as binary strings. For
-	the P-256 curve, the curve identifier is 1, and the x and y values are exactly 32 bytes each.
+	registered in the IANA registry. The x and y values (-2, -3) are integers encoded as binary
+	strings in WebAuthn.
+</p>
+
+<p>
+	For the P-256 curve, the curve identifier is 1, and the x and y values are exactly 32 bytes each.
 </p>
 
 <pre><code>{
