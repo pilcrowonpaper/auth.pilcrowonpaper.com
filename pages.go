@@ -80,10 +80,20 @@ type topicStruct struct {
 var stylesheetCSS string
 
 func createPageHTML(pageTitle string, pagePath string, contentHTML string) string {
-	pageURL := path.Join("https://auth.pilcrowonpaper.com", pagePath)
+	var pageURL string
+	if pagePath == "/" {
+		pageURL = "https://auth.pilcrowonpaper.com"
+	} else if pagePath != "" {
+		pageURL = fmt.Sprintf("https://auth.pilcrowonpaper.com%s", path.Clean(pagePath))
+	}
+
+	ogURL := "https://auth.pilcrowonpaper.com"
+	if pageURL != "" {
+		ogURL = pageURL
+	}
 
 	var canonicalLinkHTML string
-	if pagePath != "" {
+	if pageURL != "" {
 		canonicalLinkHTML = fmt.Sprintf(`<link rel="canonical" href="%s">`, pageURL)
 	}
 
@@ -126,7 +136,7 @@ func createPageHTML(pageTitle string, pagePath string, contentHTML string) strin
 		pageHTMLTemplate,
 		html.EscapeString(pageTitle),
 		html.EscapeString(pageTitle),
-		html.EscapeString(pageURL),
+		html.EscapeString(ogURL),
 		canonicalLinkHTML,
 		stylesheetCSS,
 		contentHTML,
