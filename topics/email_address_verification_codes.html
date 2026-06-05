@@ -15,10 +15,10 @@
 
 <p>
 	Our main goal with email address verification is to discourage the use of email addresses that the
-	user doesn’t own. We don’t need to make it impossible, just hard enough. With that in mind, I
+	user doesn't own. We don't need to make it impossible, just hard enough. With that in mind, I
 	recommend using an 8-digit numeric code with a rate limit of 1 attempt per minute per email
 	address. The code should remain valid for up to an hour, but preferably shorter. Using the email
-	address as the rate-limit key ensures that a malicious actor can’t bypass the limit by starting
+	address as the rate-limit key ensures that a malicious actor can't bypass the limit by starting
 	multiple attempts or creating multiple accounts. As an example, you could use a token bucket with
 	a maximum capacity of 5 tokens and a refill rate of 1 token per minute for the rate limit. The
 	code doesn't need to be hashed before storage. You also do not need to keep track of unsuccessful

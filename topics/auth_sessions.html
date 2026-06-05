@@ -13,7 +13,7 @@
 	whenever the session token is used, ensuring that only inactive users are signed out. If your
 	application doesn't require the highest level of security and you want to prioritize user
 	experience, this is likely the best strategy. To avoid excessive writes to your storage layer, I
-	recommend refreshing the expiration periodidally (e.g., once an hour or once per day) rather than
+	recommend refreshing the expiration periodically (e.g., once an hour or once per day) rather than
 	on every request.
 </p>
 
@@ -33,7 +33,7 @@
 	of all devices immediately after changing their password, but it shouldn't be mandatory. Users
 	often update their password because they've forgotten it or simply as a preventative measure. It's
 	also uncommon to invalidate existing sessions when passkeys are registered or removed. If you do
-	choose to invalidate all sessions after a password change, always make that clear so users aren’t
+	choose to invalidate all sessions after a password change, always make that clear so users aren't
 	left guessing.
 </p>
 
@@ -42,7 +42,7 @@
 	successful authentication event. This is relevant for post sign-in identity verification. The core
 	purpose of identity verification is to prevent malicious actors from using stolen session tokens.
 	However, if the existing session is re-used, an attacker could simply wait for the legitimate user
-	to authenticate and then takeover the process. As such, I recommend using action-specifc sessions
+	to authenticate and then takeover the process. As such, I recommend using action-specific sessions
 	for any action requiring identity verification such as updating a password, registering new
 	passkeys, or deleting an account. This also makes it easy to ensure that the verification is
 	single-use and strictly tied to a specific action.

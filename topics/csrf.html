@@ -11,13 +11,13 @@
 	by third-party websites. While the browser's same-origin policy (SOP) blocks most cross-origin
 	requests, it explicitly permits "simple requests". These include GET, HEAD, and certain POST
 	requests. If your server accepts these requests and store the auth session token inside a cookie,
-	a malicious website can send requets as the authenticated user. Note that the vulnerability is
-	specifically the browser’s automatic use of the user's cookies. A random person manually sending
+	a malicious website can send requests as the authenticated user. Note that the vulnerability is
+	specifically the browser's automatic use of the user's cookies. A random person manually sending
 	requests with tools like cURL is not a CSRF vulnerability and should not be treated as an attack.
 </p>
 
 <p>
-	First, it’s important to clarify the difference between “origin” and “site.” In the context of
+	First, it's important to clarify the difference between “origin” and “site.” In the context of
 	same-origin and cross-origin, an origin refers to the exact domain, including the subdomain.
 	<code>foo.example.com</code>
 	and <code>bar.example.com</code> are considered different origins. A site, however, refers to the
@@ -63,7 +63,7 @@
 </p>
 
 <p>
-	While the <code>SameSite</code> cookie attribute is a good layer of defence, it is unforunately
+	While the <code>SameSite</code> cookie attribute is a good layer of defense, it is unfortunately
 	not a silver bullet. First, it will not block cross-origin requests such as between subdomains.
 	You are still susceptible to CSRF if your one your subdomains has a XSS vulnerability or gets
 	taken over. Additionally, the attribute was only widely adopted by browsers around 2019. Any
@@ -99,9 +99,9 @@
 <p>
 	Finally, the oldest way to prevent CSRF is by using anti-CSRF tokens. Your server generates a
 	token on the initial visit, and that token is required for any state-modifying actions such as
-	form submissions. Third-party websites cannot access the token because the browser’s SOP prevents
+	form submissions. Third-party websites cannot access the token because the browser's SOP prevents
 	cross-origin sites from reading responses and thus the embedded token. This approach is compatible
-	with legacy browsers and remains widely effective. See OWASP’s
+	with legacy browsers and remains widely effective. See OWASP's
 	<a
 		href="https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html"
 		>CSRF</a

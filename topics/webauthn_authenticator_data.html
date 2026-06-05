@@ -22,7 +22,7 @@
 		flows, this should be 1.
 	</li>
 	<li>
-		Bit 2: The user verification flag. Set to 1 if the user’s identity was verified (e.g., via PIN
+		Bit 2: The user verification flag. Set to 1 if the user's identity was verified (e.g., via PIN
 		or biometrics). Check that the flag is enabled if you require user verification.
 	</li>
 	<li>
@@ -47,7 +47,7 @@
 	attested credential data, which has variable length. The first 16 bytes are the AAGUID of the
 	authenticator. An all-zero value indicates it is undefined. The next 2 bytes are a 16-bit unsigned
 	integer indicating the length of the credential ID, followed by the credential ID itself. The
-	maximum size of the ID is set to 1023 bytes (inclusive) by the specifcation. The remaining bytes
+	maximum size of the ID is set to 1023 bytes (inclusive) by the specification. The remaining bytes
 	contain the credential public key encoded as a COSE key in CBOR format. This is the final element
 	of the attested credential data. See the pages for each algorithm for details on COSE formats:
 	<a href="/ecdsa">ECDSA</a>, <a href="/rsa-signature-scheme">RSA signature scheme</a>, and

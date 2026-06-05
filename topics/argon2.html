@@ -3,7 +3,7 @@
 <p>
 	Argon2 is a newer family of password hashing algorithms. It is designed to be memory-intensive to
 	thwart attacks using GPUs and other dedicated hardware. I recommend using Argon2id with at least
-	16MiB of memory, 3 iterations, and 1 degree of parralelism.
+	16MiB of memory, 3 iterations, and 1 degree of parallelism.
 </p>
 
 <p>
@@ -15,7 +15,7 @@
 <p>
 	The algorithm is configured using 3 main parameters. First is the memory size, which determines
 	the size of memory each process uses. Doubling the memory size doubles the runtime. Ideally this
-	should be larger than 128MiB to truely see the benefits on Argon2 but this is unrealistic for most
+	should be larger than 128MiB to truly see the benefits on Argon2 but this is unrealistic for most
 	web applications. Next is the iteration count. If you're using Argon2id, use a minimum of 3
 	iterations. Finally, the degree of parallelism. This dictates the number of parallel threads
 	utilized per hashing operation. While increasing parallelism speeds up individual execution times,

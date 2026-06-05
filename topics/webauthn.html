@@ -181,7 +181,7 @@
 	except the client (browser) may replace the attestation with a more privacy-preserving format,
 	such as one issued by a third-party certificate authority. In this case, detailed device
 	information may not be available, though the attestation can still be used to verify the
-	authenticator’s capabilities and trustworthiness. In practice, though, I'm not aware of any modern
+	authenticator's capabilities and trustworthiness. In practice, though, I'm not aware of any modern
 	browsers that behave any differently from <code>"none"</code> or <code>"direct"</code>. Finally,
 	<code>"enterprise"</code>
 	indicates that the relying party is requesting enterprise attestation, which can uniquely identify
@@ -251,9 +251,9 @@
 	the authenticator does not support signature counters. Although signature counters are intended to
 	help detect potential private key theft, they do not provide definitive proof that compromise has
 	occurred. At best, a counter mismatch should be treated as a signal to log the event and manually
-	review the user’s account. It's also worth noting that extracting private keys from external
+	review the user's account. It's also worth noting that extracting private keys from external
 	hardware tokens is generally very difficult in practice and unlikely to happen. If you implement
-	this feature, store the lastest counter value alongside the credential.
+	this feature, store the latest counter value alongside the credential.
 </p>
 
 <p>
@@ -343,11 +343,11 @@
 
 <p>
 	If you support signature counters and the stored credential has a non-zero counter value, check
-	whether the current attempt’s signature counter is greater than the stored value, and update the
+	whether the current attempt's signature counter is greater than the stored value, and update the
 	stored value before verifying the signature. If the counter is smaller, simply log the event for
 	future reference. Do not block the authentication attempt, as in the event of private key theft,
-	the legitimate user’s authentications are also likely to encounter counter mismatches. I would
-	also dicourage disabling the account as well since these can occur naturally.
+	the legitimate user's authentications are also likely to encounter counter mismatches. I would
+	also discourage disabling the account as well since these can occur naturally.
 </p>
 
 <p>

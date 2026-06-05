@@ -1,7 +1,7 @@
 <h1>Email addresses</h1>
 
 <p>
-	Email addresses work great as an account identifier as they’re something users remember and
+	Email addresses work great as an account identifier as they're something users remember and
 	globally unique. By verifying ownership of the domain, you also can avoid squatting and typos.
 	However, keep in mind that this effectively makes the email address a public-facing identifier.
 	Avoid it if you (or your users) prefer not to expose which individuals are using your website.
@@ -22,7 +22,7 @@
 </p>
 
 <p>
-	However, if the email address is an account identifier, we should be more careful. It’s going to
+	However, if the email address is an account identifier, we should be more careful. It's going to
 	be part of your system and will be displayed to users as part of the website's UI. That means like
 	usernames, we need to be strict with them. As such, I recommend putting the following
 	restrictions:
@@ -43,7 +43,7 @@
 </ol>
 
 <p>
-	I strongly discourage silently modifying the user’s input, such as automatically lowercasing email
+	I strongly discourage silently modifying the user's input, such as automatically lowercasing email
 	addresses or stripping the plus sign to block aliases. As I mentioned, the local part of an email
 	address can be case-sensitive. Furthermore, the plus sign (+) is not universal and only has a
 	special meaning in certain mail servers (e.g., Gmail).

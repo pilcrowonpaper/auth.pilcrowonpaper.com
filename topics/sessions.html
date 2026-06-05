@@ -12,11 +12,11 @@
 	modify. For example, storing the authenticated user ID on the client and having the server trust
 	whatever user ID the client sends would be a complete breakdown in security. Instead, any relevant
 	data should be stored as a record on the server, and the client can reference it in subsequent
-	requests to continue the user’s activity.
+	requests to continue the user's activity.
 </p>
 
 <p>
-	In this book, a session refers to a server-side record that represents a client’s ongoing activity
+	In this book, a session refers to a server-side record that represents a client's ongoing activity
 	within an application. To prevent malicious actors from referencing arbitrary sessions, the server
 	issues a session token to the client. The client includes this token on subsequent requests.
 	Because the token is known only to client that started the session, an outside actor cannot hijack
@@ -65,7 +65,7 @@
 	stealing a single token. First, this means putting a reasonable expiration. This could be a fixed
 	expiration or a dynamic one. Second, issue a new session and a session token after certain actions
 	such as user authentication. You can also add further restrictions to sessions, such as binding
-	them to an IP address. However, for most consumer-facing websites, I’d recommend against this
+	them to an IP address. However, for most consumer-facing websites, I'd recommend against this
 	since IP addresses can change frequently, especially on mobile networks or when using a VPN. A
 	more practical alternative is to bind the session to the country or region inferred from the IP
 	address.
