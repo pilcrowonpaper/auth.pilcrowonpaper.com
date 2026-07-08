@@ -77,32 +77,34 @@
 </p>
 
 <pre><code>const credential = await navigator.credentials.create({
-	challenge: challenge,
-	rp: {
-		id: new URL(window.location.href).hostname,
-	},
-	user: {
-		id: new TextEncoder().encode(userId),
-		displayName: userEmailAddress,
-	},
-	pubKeyCredParams: [
-		{ type: "public-key", alg: -8 },
-		{ type: "public-key", alg: -7 },
-		{ type: "public-key", alg: -257 },
-	],
-	excludeCredentials: [{
-		type: "public-key",
-		id: existingCredentialId,
-	}],
-	authenticatorSelection: {
-		residentKey: "required",
-		requireResidentKey: true,
-		userVerification: "required",
-	},
-	attestation: "none",
-	extensions: {
-		credentialProtectionPolicy: "userVerificationRequired",
-		enforceCredentialProtectionPolicy: false,
+	publicKey: {
+		challenge: challenge,
+		rp: {
+			id: new URL(window.location.href).hostname,
+		},
+		user: {
+			id: new TextEncoder().encode(userId),
+			displayName: userEmailAddress,
+		},
+		pubKeyCredParams: [
+			{ type: "public-key", alg: -8 },
+			{ type: "public-key", alg: -7 },
+			{ type: "public-key", alg: -257 },
+		],
+		excludeCredentials: [{
+			type: "public-key",
+			id: existingCredentialId,
+		}],
+		authenticatorSelection: {
+			residentKey: "required",
+			requireResidentKey: true,
+			userVerification: "required",
+		},
+		attestation: "none",
+		extensions: {
+			credentialProtectionPolicy: "userVerificationRequired",
+			enforceCredentialProtectionPolicy: false,
+		},
 	},
 })</code></pre>
 
